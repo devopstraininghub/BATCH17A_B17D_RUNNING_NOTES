@@ -620,7 +620,90 @@ set nonu
 /useradd
 
 n --> next 
+====================================
+USE Tips --> Added by Venkata Krishna Vamsy Gundu
 
+# Navigation
+
+1. h j k l → Left, Down, Up, Right
+2. w / b → Next/previous word
+3. 0 → Start of line
+4. $ → End of line
+5. gg → Go to first line
+6. G → Go to last line
+7. :154 or 154G → Go to line 154
+8. Ctrl + d / Ctrl + u → Half page down / up
+9. Ctrl + f / Ctrl + b → Full page forward / backward
+
+# Insert Mode
+
+1. i → Insert before cursor
+2. I → Insert at start of line
+3. a → Insert after cursor
+4. A → Insert at end of line
+5. o → New line below
+6. O → New line above
+7. Esc → Exit insert mode
+
+# Editing (Delete, Copy, Paste)
+
+1. x → Delete character
+2. dd → Delete line
+3. dw → Delete word
+4. yy → Copy (yank) line
+5. yw → Copy word
+6. p → Paste after cursor
+7. P → Paste before cursor
+8. u → Undo
+9. Ctrl + r → Redo
+
+# Search
+
+1. /word → Search forward
+2. ?word → Search backward
+3. n → Next match
+4. N → Previous match
+5. :%s/old/new/g → Replace all
+
+# File Commands
+
+1. :w → Save
+2. :q → Quit
+3. :wq or ZZ → Save and quit
+4. :q! → Quit without saving
+5. :e filename → Open file
+
+# Window & Tabs
+
+1. :split or :sp → Horizontal split
+2. :vsplit or :vs → Vertical split
+3. Ctrl + w + w → Switch window
+4. Ctrl + w + q → Close window
+5. :tabnew → New tab
+6. gt / gT → Next / previous tab
+
+# Visual Mode
+
+1. v → Visual (character)
+2. V → Visual line
+3. Ctrl + v → Visual block
+4. y → Yank selection
+5. d → Delete selection
+
+# Useful Extras
+
+1. . → Repeat last command
+2. :%y+ → Copy whole file
+3. :%d → Delete whole file
+4. :set number → Show line numbers
+5. :noh → Clear search highlight
+6. :set hlsearch -> to get highlight search
+7. :set incsearch --> highligth while typing
+8. :set ignorecase --> case insensitive
+9. :set smartcase --> If your search pattern contains any uppercase letter, the search becomes case-sensitive
+10. :set noignorecase --> case insensitive
+11. :set nosmartcase --> ignore smartcase
+Note: smartcase only works when ignorecase is ON
 
 
 
