@@ -1,0 +1,518 @@
+ion:
+
+clear --- ctrl +L
+
+whoami
+
+hostname 
+sudo su - 
+hostnamectl set-hostname linuxsrv
+ 
+pwd 
+
+cd /opt
+
+touch file1 file2 file3
+
+mkdir dir1 dir2 dir3 
+
+ls
+ls -lrth
+ll
+ls -la
+
+rm -rf fname/dirname 
+
+cd dirname
+
+cd ..
+
+cat fname 
+
+yum install <pkgname>
+
+
+cp -rp src dest 
+
+mv src dest 
+
+==================================================================     
+   root dir --> / 
+
+Filesystem Hierarchy Standard (FHS):
+ 
+ 
+The Filesystem Hierarchy Standard (FHS) is a set of guidelines that define the structure and organization of directories and files on Unix-like operating systems, including Linux. It aims to ensure consistency and compatibility between different distributions of Linux, making it easier for software developers, administrators, and users to navigate and understand the file system. Here are the key components of the FHS:
+
+
+--------------------------------------------------
+WHAT IS LINUX DIRECTORY STRUCTURE?
+--------------------------------------------------
+
+    Linux follows a hierarchical file system.
+
+    Everything starts from:
+
+        /   (root directory)
+
+    All files and directories are organized
+    under this root.
+
+
+--------------------------------------------------
+ROOT DIRECTORY (/)
+--------------------------------------------------
+
+    Top-level directory in Linux.
+
+    All other directories exist inside it.
+
+    Example:
+
+        /home
+        /etc
+        /var
+
+--------------------------------------------------
+/home
+--------------------------------------------------
+
+    User home directories
+
+    Example:
+
+        /home/ec2-user
+        /home/ubuntu
+
+    Stores:
+        • User files
+        • Personal data
+
+
+--------------------------------------------------
+/root
+--------------------------------------------------
+
+    Home directory of root user (admin)
+
+    Not same as /
+
+
+--------------------------------------------------
+/etc
+--------------------------------------------------
+
+    Configuration files
+
+    Stores:
+
+        • System configs
+        • Service configs
+
+    Example:
+
+        /etc/passwd
+        /etc/ssh/sshd_config
+
+
+--------------------------------------------------
+/var
+--------------------------------------------------
+
+    Variable data (changes frequently)
+
+    Stores:
+
+        • Logs
+        • Cache
+        • Application data
+
+    Example:
+
+        /var/log/
+        /var/lib/jenkins/
+        /var/lib/docker
+
+--------------------------------------------------
+/usr
+--------------------------------------------------
+
+    User programs and utilities
+
+    Contains:
+
+        • Applications
+        • Libraries
+        • Documentation
+
+    Example:
+
+        /usr/bin
+        /usr/lib
+
+
+--------------------------------------------------
+/bin
+--------------------------------------------------
+
+    Essential system commands
+
+    Example:
+
+        ls
+        cp
+        mv
+        cat
+
+
+--------------------------------------------------
+/sbin
+--------------------------------------------------
+
+    System/admin commands
+
+    Example:
+
+        reboot
+        shutdown
+        ifconfig
+
+
+--------------------------------------------------
+/tmp
+--------------------------------------------------
+
+    Temporary files
+
+    • Auto-deleted on reboot
+    • Used for temporary storage
+
+
+--------------------------------------------------
+/opt
+--------------------------------------------------
+
+    Optional software installations
+
+    Example:
+
+        /opt/tomcat
+        /opt/custom_apps
+
+
+--------------------------------------------------
+/dev
+--------------------------------------------------
+
+    Device files
+
+    Represents hardware devices
+
+    Example:
+
+        /dev/sda
+        /dev/null
+
+
+--------------------------------------------------
+/proc
+--------------------------------------------------
+
+    Virtual filesystem
+
+    Contains system/process info
+
+    Example:
+
+        /proc/cpuinfo
+
+
+--------------------------------------------------
+/boot
+--------------------------------------------------
+
+    Boot loader files
+
+    Required to start system
+
+    Example:
+
+        Kernel files
+
+
+--------------------------------------------------
+/mnt and /media
+--------------------------------------------------
+
+    Used to mount external storage
+
+    Example:
+
+        USB drives
+        EBS volumes
+
+
+--------------------------------------------------
+IMPORTANT DEVOPS DIRECTORIES
+--------------------------------------------------
+
+    /var/log
+        Logs for debugging
+
+    /etc
+        Configurations
+
+    /var/lib
+        Application data (Jenkins, Docker)
+
+    /home
+        User scripts and files
+
+
+--------------------------------------------------
+SIMPLE STRUCTURE VIEW
+--------------------------------------------------
+
+        /
+        ├── home
+        ├── root
+        ├── etc
+        ├── var
+        ├── usr
+        ├── bin
+        ├── sbin
+        ├── tmp
+        ├── opt
+        ├── dev
+        ├── proc
+        ├── boot
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASE
+--------------------------------------------------
+
+    • Check logs → /var/log
+    • Modify configs → /etc
+    • Install apps → /opt
+    • Store user data → /home
+    • Debug system → /proc
+
+==============================================
+    Linux file system is hierarchical
+    starting from root (/)
+	
+	
+	
+root --> /
+ll
+/bin – binary or executable programs.
+/sbin – binary executable programs for an administrator.
+/etc – system configuration files.
+/home – home directory. It is the default current directory.
+/root - home directory of root user 
+
+
+--------------------------------------------------
+NESTED DIRECTORY CREATION
+--------------------------------------------------
+
+    Command:
+
+        mkdir -p a/b/c/d/e
+
+    Meaning:
+
+        • Creates multiple directories at once
+        • No error if parent directories don’t exist
+
+    Example:
+
+        mkdir -p project/src/main/java
+
+    Use case:
+        Create project structure in one command
+
+
+--------------------------------------------------
+COPY WITH PERMISSIONS
+--------------------------------------------------
+
+    Command:
+
+        cp -rp src_path dest_path
+
+    Options:
+
+        -r → Recursive (copy directories)
+        -p → Preserve permissions, ownership, timestamps
+
+    Example:
+
+        cp -rp /var/www /backup/
+
+    Use case:
+        Backup files with original permissions intact
+
+
+--------------------------------------------------
+ABSOLUTE PATH
+--------------------------------------------------
+
+    Definition:
+
+        Full path starting from root (/)
+
+    Example:
+
+        /home/ec2-user/app/file.txt
+
+    Key Point:
+
+        • Always starts with /
+        • Works from anywhere
+
+
+--------------------------------------------------
+RELATIVE PATH
+--------------------------------------------------
+
+    Definition:
+
+        Path relative to current directory
+
+    Example:
+
+        ./file.txt
+        ../folder/file.txt
+
+    Symbols:
+
+        .   → Current directory
+        ..  → Parent directory
+
+    Use case:
+        Short paths inside current working directory
+
+
+--------------------------------------------------
+MOVE / RENAME FILES
+--------------------------------------------------
+
+    Command:
+
+        mv src_path dest_path
+
+    Example (move file):
+
+        mv file.txt /home/ec2-user/
+
+    Example (rename file):
+
+        mv oldname.txt newname.txt
+
+    Example (move + rename):
+
+        mv file.txt /home/ec2-user/newfile.txt
+
+
+=====================================
+
+
+useradd uname 
+passwd uname
+
+su - uname
+
+userdel -r uname 
+
+user-home :   /home/uname
+
+cat /etc/passwd
+
+usermod -c "DevOpsUser" madhu
+
+============================================
+cat /etc/passwd 
+tail -n /etc/passwd
+tail -100f /etc/passwd
+head -n /etc/passwd
+more fname
+-----------------------------------
+
+touch fname 
+
+echo "WELCOME TO MINDCIRCUIT devops" > mcfile
+echo "be ready to work hard " >> mcfile
+--------
+
+editor: vi / vim &  NANO
+
+
+vim fname 
+
+esc -- i    < insert mode > 
+
+   ----- data ----
+   ----- data ----
+   ----- data ----
+esc : w
+
+esc : q
+
+esc : wq!
+
+
+dd 
+n dd 
+
+yy
+n yy  
+p 
+
+gg - top line  
+G  - Ground 
+
+
+
+
+
+===================================
+
+wc  /etc/passwd
+
+wc -l /etc/passwd
+
+wc  -w /etc/passwd
+
+wc  -c /etc/passwd
+
+=================================
+
+
+
+===============================
+comparing files :
+
+
+diff file1 file2
+sdiff file1 file2
+================================================
+touch 
+
+vim 
+
+create a file using touch , vim , echo 
+
+echo " docker k8s terraform jenkins " > file2  ( overwrite) 
+echo " aws linux git github " >> file2  ( append) 
+
+
+========================
+
+
+
+
+
+
+
