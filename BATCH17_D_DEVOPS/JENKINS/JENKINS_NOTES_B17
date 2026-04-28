@@ -1458,6 +1458,300 @@ In server.xml:
 * Used to run app at http://localhost:80
 
 
+===================================================================================================================================
+
+DATE: 28 APR 2026
+
+
+
+
+===============================================
+1. SECURITY GROUP ( allow all traffic ) 
+2. WHY FEW PEOPLE ARE NOT ABLE TO CREATE FREE TIER ACCOUNT ?
+       Already Used Free Tier - If the person has already created a free-tier account with the same:
+       Email
+       Phone number
+       Credit card
+  → They cannot register again for free credits.
+
+
+==============================================
+JENKINS VIEWS :
+
+
+=================================================
+
+3. PARALLEL STAGE JOBS 
+
+In Jenkins, you can run multiple jobs in parallel within a single pipeline by using the parallel directive inside a stage. This is particularly useful when you want to speed up builds (e.g., running tests on multiple platforms, or executing independent tasks simultaneously).
+
+
+
+
+
+
+pipeline {
+    agent any
+
+    stages {
+	
+        stage('checkout') {
+            steps {
+                echo 'git checkout stage'
+				git branch: 'main', url: 'https://github.com/devopstraininghub/mindcircuit17d.git'
+            }
+        }
+
+        stage('build') {
+            steps {
+                echo 'Building with maven '
+				sh 'mvn clean install '
+            }
+        }
+		
+		
+   stage('Deploy to Multiple Environments') {
+      parallel {		
+
+        stage('Deploy to LAB') {
+            steps {
+                echo 'Deploying to tomcat'
+				deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://3.92.84.214:8081/')], contextPath: 'LAB-MC-APP', war: '**/*.war'
+				
+            }
+        }	
+
+               stage('Deploy to UAT') {
+            steps {
+                echo 'Deploying to tomcat'
+				deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://3.92.84.214:8081/')], contextPath: 'UAT-MC-APP', war: '**/*.war'
+				
+            }
+        }
+		
+		
+		   stage('Deploy to SBOX') {
+            steps {
+                echo 'Deploying to tomcat'
+				deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://3.92.84.214:8081/')], contextPath: 'SBOX-MC-APP', war: '**/*.war'
+				
+            }
+        }
+		
+		}
+		}
+    }
+}
+
+=====================
+
+4. BUILD SHOUD CONTINUE EVEN IF A STAGE FAILS IN PIPELINE : (USING try & catch blocks) :
+
+
+pipeline {
+
+    agent any
+    stages {
+          stage('CLONE GITHUB CODE') {
+            steps {
+                script {
+                    try {
+                        echo 'In this stage code will be cloned'
+                        git branch: 'master', url: 'https://github.com/devopstraininghub/mindcircuit177d.git'
+                    } 
+					catch (Exception e) {
+                        echo "Stage 1 failed: ${e.message}"
+                    }
+                }
+            }
+        }
+		
+        stage('Build Artifact') {
+            steps {
+                echo 'This stage builds the code using maven'
+			  // sh 'mvn clean install' 
+				
+            }
+        }
+
+      
+
+        }
+    }
+	
+	
+	==============================================================
+
+
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('CLONE GITHUB CODE') {
+            steps {
+                script {
+                    try {
+                        echo 'In this stage code will be cloned'
+                        git branch: 'master', url: 'https://github.com/devopstraininghub/mindcircuit17d.git'
+                    } 
+					catch (Exception e) {
+                        echo "Stage 1 failed: ${e.message}"
+                    }
+                }
+            }
+        }
+
+        stage('BUILDING THE CODE') {
+            steps {
+                script {
+                    try {
+                        echo 'In this stage code will be built and mvn artifact will be generated'
+                        sh 'mvn clean installlll'
+                    } catch (Exception e) {
+                        echo "Stage 2 failed: ${e.message}"
+                    }
+                }
+            }
+        }
+
+        stage('DEPLOY') {
+            steps {
+                  echo "deployed artifact to tomcat" 
+                }
+            }
+        }
+    }
+
+
+
+
+===================================================================================================
+5. PIPELINE WITH ENVIRONEMNT VARIABLES
+
+   Environment variables are key–value pairs that store information which can be used by processes, scripts, or applications.
+
+
+
+    export JAVA_HOME=/usr/lib/jvm/java-11
+    export PATH=$JAVA_HOME/bin:$PATH
+
+
+
+Environment Variables in Jenkins
+
+In Jenkins environment variables are:
+    
+    Values you can define globally, per-job, or inside a pipeline.
+    
+    Used to pass information between stages, steps, and scripts.
+    
+
+    Built-in variables                  vs
+	Custom environment variables
+    
+    BUILD_NUMBER → current build number
+    
+    WORKSPACE → path to job’s workspace
+    
+    JOB_NAME → name of the job
+    
+========================
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Show Built-in Env Variables') {
+            steps {
+                echo "Job Name: ${{env.JOB_NAME}"          // name of the Jenkins job
+                echo "Build Number: ${env.BUILD_NUMBER}" // auto-incremented build number
+                echo "Workspace: ${env.WORKSPACE}"       // directory where code is checked out
+                echo "Build ID: ${env.BUILD_ID}"         // unique ID for this build
+                echo "Node Name: ${env.NODE_NAME}"       // Jenkins agent name
+                echo "Executor Number: ${env.EXECUTOR_NUMBER}" // executor slot running this job
+         //       echo "Git Branch: ${env.GIT_BRANCH}"     // available if job is connected to Git
+            }
+        }
+
+        stage('Run Script with Env Vars') {
+            steps {
+                sh '''
+                    echo "We are running job: $JOB_NAME"
+                    echo "This is build number: $BUILD_NUMBER"
+                    echo "Workspace is: $WORKSPACE"
+                '''
+            }
+        }
+    }
+}
+
+===============================================================================	
+	
+
+
+pipeline {
+    agent any
+
+    environment {
+        GIT_URL = 'https://github.com/devopstraininghub/mindcircuit17d.git'
+        GIT_BRANCH = 'main'
+        MAVEN_CMD = 'mvn clean install'
+        TOMCAT_URL = 'http://3.92.84.214:8081/'
+    }
+
+    stages {
+
+        stage('checkout') {
+            steps {
+                echo 'git checkout stage'
+                git branch: "${GIT_BRANCH}", url: "${GIT_URL}"
+            }
+        }
+
+        stage('build') {
+            steps {
+                echo "Build number: ${env.BUILD_NUMBER}"
+                echo 'Building with maven'
+                sh "${MAVEN_CMD}"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying to tomcat'
+                deploy adapters: [
+                    tomcat9(
+                        alternativeDeploymentContext: '',
+                        credentialsId: 'tomcat',
+                        path: '',
+                        url: "${TOMCAT_URL}"
+                    )
+                ],
+                contextPath: 'insta',
+                war: '**/*.war'
+            }
+        }
+
+    }
+}
+
+
+
+
+
+==================================================================
+
+
+
+
+
 
 
 
