@@ -1749,6 +1749,137 @@ pipeline {
 ==================================================================
 
 
+DATE:  29 APR 2026
+
+==================================================================
+
+NEXUS ARTIFACTORY :
+
+
+LINUX COMMANDS :
+
+
+
+chown -R user:group file/dir  ( Change file ownership ) 
+
+chkconfig ---> systemctl enable 
+
+version id --> 8.2.0 -->>> going to be released
+version id --> 8.2.0-SNAPSHOT -->>> under development / on going implementation
+
+
+
+NEXUS :
+
+BY sonatye 
+opensource 
+java based software 
+LISTENS ON PORT : 8081 
+
+blog to follow : https://devopscube.com/how-to-install-latest-sonatype-nexus-3-on-linux/
+
+
+============
+
+scm - git 
+
+nexus -- artifacts 
+s3 :
+
+history:
+
+    1  ll
+    2  cd /opt/
+    3  ll
+    4  touch test
+    5  ll
+    6  useradd madhu
+    7  ll
+    8  chown -R madhu:madhu test
+    9  ll
+   10  sudo yum update -y
+   11  sudo yum install wget -y
+   12  sudo yum install java-17-openjdk -y
+   13  sudo yum install java-17 -y
+   14  java --version
+   15  sudo mkdir /app && cd /app
+   16  pwd
+   17  sudo wget -O nexus.tar.gz https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+   18  wget https://download.sonatype.com/nexus/3/nexus-3.91.1-04-linux-x86_64.tar.gz
+   19  ll
+   20  rm -rf *
+   21  ll
+   22  sudo wget -O nexus.tar.gz https://download.sonatype.com/nexus/3/nexus-3.91.1-04-linux-x86_64.tar.gz
+   23  ll
+   24  tar -xvf nexus.tar.gz
+   25  ll
+   26  mv nexus-3.91.1-04/ nexus
+   27  ll
+   28  sudo adduser nexus
+   29  cat /etc/passwd
+   30  ll
+   31  sudo chown -R nexus:nexus /app/nexus
+   32  sudo chown -R nexus:nexus /app/sonatype-work
+   33  ll
+   34  cd nexus/
+   35  ll
+   36  cd bin/
+   37  ll
+   38  sudo vi  /app/nexus/bin/nexus.rc
+   39  cat /app/nexus/bin/nexus.rc
+   40  ll
+   41  cat nexus.vmoptions
+   42  ll
+   43  systemctl status nexus
+   44  sudo vi /etc/systemd/system/nexus.service
+   45  sudo chkconfig nexus on
+   46  systemctl start nexuus
+   47  systemctl start nexus
+   48  systemctl status nexus
+   49  cat /app/sonatype-work/nexus3/admin.password
+   50  history
+
+
+
+####
+
+//
+
+
+
+==============
+http://54.82.92.150:8081/repository/batch17d-repo-release/
+
+http://54.82.92.150:8081/repository/batch17d-repo-snapshot/
+
+
+in POM.XML : 
+
+
+	<distributionManagement>
+		 <snapshotRepository>
+		    <id>NexusRepo</id>
+		    <url>http://54.82.92.150:8081/repository/batch17d-repo-snapshot/</url>
+		 </snapshotRepository>
+		
+		<repository>
+		    <id>NexusRepo</id>
+		    <url>http://54.82.92.150:8081/repository/batch17d-repo-release/</url>
+		</repository>
+  	</distributionManagement>
+
+
+
+========================================
+
+IN JENKINS/MAVEN SERVER --> /etc/maven/setting.xml
+ADD the content 
+
+    <server>
+      <id>NexusRepo</id>
+      <username>admin</username>
+      <password>Test@123</password>
+    </server>
 
 
 
