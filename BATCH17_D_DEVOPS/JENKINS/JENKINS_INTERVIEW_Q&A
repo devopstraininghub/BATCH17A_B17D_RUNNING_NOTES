@@ -1,0 +1,648 @@
+JENKINS + CI/CD INTERVIEW QUESTIONS 
+
+---
+
+1. What CI/CD tools have you worked on?
+
+I have worked on Jenkins and GitHub Actions. I have experience in setting up and managing Jenkins pipelines for various projects, integrating it with version control systems like Git, and using it to automate build, test, and deployment processes.
+
+---
+
+2. What are the different types of pipelines in Jenkins?
+
+In Jenkins, there are two main types of pipelines: Declarative Pipeline and Scripted Pipeline.
+
+---
+
+3. What is the difference between Declarative and Scripted Pipeline?
+
+Declarative Pipeline is a more user-friendly and structured way to define pipelines,
+ while Scripted Pipeline offers more flexibility and control over the pipeline logic.
+
+syntax: 
+          Declarative Pipeline:
+
+
+          pipeline {
+              agent any
+              stages {
+                  stage('Build') {
+                      steps {
+                          // build steps
+                      }
+                  }
+                  stage('Test') {
+                      steps {
+                          // test steps
+                      }
+                  }
+                  stage('Deploy') {
+                      steps {
+                          // deploy steps
+                      }
+                  }
+              }
+          }
+
+          Scripted Pipeline:
+
+          node {
+              stage('Build') {
+                  // build steps
+              }
+              stage('Test') {
+                  // test steps
+              }
+              stage('Deploy') {
+                  // deploy steps
+              }
+          }
+          ---
+
+4. What is Jenkins architecture?
+
+Jenkins follows a master-slave architecture. 
+The Jenkins master is responsible for managing the overall Jenkins environment, including scheduling builds, dispatching builds to the slaves, and monitoring the slaves. 
+The Jenkins slaves are responsible for executing the build tasks assigned by the master.
+ This architecture allows for distributed builds and scalability, as multiple slaves can be added to handle more build tasks simultaneously.
+
+---
+
+5. How do you force Jenkins to run a job on a specific node?
+
+  You can use the label parameter in the agent directive. 
+For example, if you want to run a job on a node labeled "linux", you can specify it like this:
+
+              pipeline {
+                  agent { label 'linux' }
+                  stages {
+                      stage('Build') {
+                          steps {
+                              // build steps
+                          }
+                      }
+                  }
+              }
+
+---
+
+6. How do you run specific stages in a pipeline?
+
+You can use the when directive to conditionally run specific stages in a pipeline.
+For example, if you want to run a stage only when the branch is "main", you can specify it like this:
+
+              pipeline {
+                  agent any
+                  stages {
+                      stage('Build') {
+                          steps {
+                              // build steps
+                          }
+                      }
+                      stage('Test') {
+                          when {
+                              branch 'main'
+                          }
+                          steps {
+                              // test steps
+                          }
+                      }
+                  }
+              }
+
+---
+
+7. What plugins have you used in Jenkins?
+
+I have used various plugins in Jenkins, including:
+- Git plugin for integrating with Git repositories
+- Docker plugin for containerizing applications
+- Kubernetes plugin for orchestrating containers  
+- Pipeline plugin for defining and managing pipelines
+- Email Extension plugin for sending email notifications  
+- Credentials plugin for managing secrets and credentials
+- Slack plugin for sending notifications to Slack channels
+- SonarQube plugin for code quality analysis
+- JUnit plugin for publishing test results
+- Artifactory plugin for managing build artifacts
+- Maven plugin for building Java projects
+- Ansible plugin for automating configuration management and deployment
+- SSH plugin for executing commands on remote servers
+- Blue Ocean plugin for a modern user interface and visualization of pipelines
+- Build Timeout plugin for setting time limits on builds
+- Parameterized Trigger plugin for triggering builds with parameters
+- Backup plugin for backing up Jenkins configurations and data
+- Deploy to Container plugin for deploying applications to application servers
+- Stage view plugin for visualizing pipeline stages and their status
+- GitHub plugin for integrating with GitHub repositories and managing webhooks
+- Role-based Authorization Strategy plugin for managing user permissions and access control
+
+
+
+---
+
+8. What are Jenkins dependencies?
+
+Jenkins dependencies refer to the various components and plugins that Jenkins relies on to function properly. These dependencies can include:
+- Java: Jenkins is built on Java, so it requires a compatible version of Java to run.
+
+
+---
+
+9. How do you achieve High Availability in Jenkins?
+
+To achieve High Availability in Jenkins, you can set up a Jenkins master-slave architecture with multiple Jenkins masters and slaves.
+This can be done using tools like Jenkins Operations Center or by manually configuring multiple Jenkins instances with shared storage and load balancing.
+Load balancers can be used to distribute traffic between the Jenkins masters, and shared storage can be used to ensure that all Jenkins instances have access to the same build artifacts and configurations.
+
+
+--- 
+
+10. Which folder should be backed up in Jenkins?
+
+The Jenkins home directory should be backed up in Jenkins.
+ This directory contains all the configurations, plugins, build history, and other important data related to Jenkins. By backing up the Jenkins home directory, you can ensure that you can restore your Jenkins environment in case of any issues or disasters.
+Linux path: /var/lib/jenkins (default location, can be different based on your installation)
+Windows: C:\Program Files (x86)\Jenkins (default location, can be different based on your installation)
+
+---
+
+11. Can you restore a single job in Jenkins?
+
+yes , you can restore a single job in Jenkins by copying the job's configuration file from a backup  to the Jenkins home directory.
+The job configuration files are typically located in the "jobs" subdirectory of the Jenkins home directory.
+For example, if you have a backup of the Jenkins home directory and you want to restore a specific job named "MyJob", you can copy the configuration file for that job from the backup to the Jenkins home directory like this:
+
+
+using plugin : backup plugin or manually copying the job's configuration file from the backup to the Jenkins home directory. The job configuration files are typically located in the "jobs" subdirectory of the Jenkins home directory. For example, if you have a backup of the Jenkins home directory and you want to restore a specific job named "MyJob", you can copy the configuration file for that job from the backup to the Jenkins home directory like this:
+
+---
+
+12. What is config reload in Jenkins?
+
+Config reload in Jenkins refers to the process of reloading the Jenkins configuration without restarting the Jenkins server. 
+This can be useful when you have made changes to the Jenkins configuration files or when you have added new plugins and want to apply those changes without downtime.
+
+---
+
+13. How do you run stages in parallel in Jenkins?
+
+You can use the parallel directive in Jenkins to run stages in parallel.
+
+              pipeline {
+                  agent any
+                  stages {
+                      stage('Build') {
+                          steps {
+                              // build steps
+                          }
+                      }
+                      stage('Test') {
+                          parallel {
+                              stage('Unit Tests') {
+                                  steps {
+                                      // unit test steps
+                                  }
+                              }
+                              stage('Integration Tests') {
+                                  steps {
+                                      // integration test steps
+                                  }
+                              }
+                          }
+                      }
+                      stage('Deploy') {
+                          steps {
+                              // deploy steps
+                          }
+                      }
+                  }
+              }
+
+---
+
+14. How do you trigger a Jenkins job remotely?
+
+
+---
+
+15. How do you trigger Jenkins using a webhook?
+
+to trigger Jenkins using a webhook, you can set up a webhook in your version control system (e.g., GitHub, GitLab) to send a POST request to the Jenkins server whenever a specific event occurs (e.g., code commit,push, pull request).
+
+In GitHub, you can go to the repository settings, navigate to the "Webhooks" section, and add a new webhook.
+  example URL: http://your-jenkins-server.com/github-webhook/
+You will need to specify the Jenkins server URL and the appropriate credentials for authentication when setting up the
+
+In Jenkins, you can create a job and configure it to be triggered by a webhook.
+To do this, you can use the "GitHub hook trigger for GITScm polling" option in the job configuration.
+This will allow Jenkins to listen for incoming webhook requests and trigger the job accordingly when the specified event occurs in the version control system. You will also need to provide the Jenkins server URL and the appropriate credentials for authentication when setting up the webhook in your version control system.  
+
+
+---
+
+16. How do you pass parameters to a Jenkins job?
+
+To pass parameters to a Jenkins job, you can use the "This project is parameterized" option in the job configuration.
+This allows you to define parameters that can be passed to the job when it is triggered.
+For example, you can define a string parameter called "ENVIRONMENT" that allows you to specify
+
+the environment (e.g., dev, qa, prod) to which the job should deploy.
+When you trigger the job, you can provide a value for the "ENVIRONMENT" parameter, and the job can use that value in its build steps to determine which environment to deploy to. You can also define other types of parameters such as boolean parameters, choice parameters, or file parameters based on your requirements. 
+
+in pipeline, you can define parameters using the parameters directive. For example:
+
+              pipeline {
+                  agent any
+                  parameters {
+                      string(name: 'ENVIRONMENT', defaultValue: 'dev', description: 'Environment to deploy to')
+                  }
+                  stages {
+                      stage('Deploy') {
+                          steps {
+                              echo "Deploying to ${params.ENVIRONMENT} environment"
+                              // deployment steps based on the ENVIRONMENT parameter
+                          }
+                      }
+                  }
+              }
+
+---
+
+17. How do you schedule a Jenkins job?
+
+To schedule a Jenkins job, you can use the "Build periodically" option in the job configuration. This allows you to specify a cron-like syntax to define the schedule for the job. For example, if you want to run the job every day at midnight, you can use the following syntax:
+
+              H 0 * * *
+
+---
+
+18. What is Poll SCM in Jenkins?
+
+Poll SCM (Source Code Management) is a feature in Jenkins that allows you to periodically check the source code repository for changes and trigger a build if any changes are detected.
+
+
+
+19. How do you create dependencies between Jenkins jobs?
+
+You can create dependencies between Jenkins jobs using the "Build other projects" option in the job configuration. This allows you to specify that one job should be triggered after another job completes successfully. For example, if you have a build job and a test job, 
+you can configure the test job to be triggered automatically after the build job finishes successfully. You can also use plugins like "Parameterized Trigger plugin" to pass parameters from one job to another when creating dependencies between jobs.
+
+---
+
+20. How do you run a stage even if the previous stage fails?
+
+You can use the "post" directive in Jenkins to specify actions that should be taken after a stage, regardless of whether the previous stage succeeded or failed. 
+For example, you can use the "always" condition to run a stage even if the previous stage fails:
+
+              pipeline {
+                  agent any
+                  stages {
+                      stage('Build') {
+                          steps {
+                              // build steps
+                          }
+                      }
+                      stage('Test') {
+                          steps {
+                              // test steps
+                          }
+                      }
+                  }
+                  post {
+                      always {
+                          // steps to run even if the previous stages fail
+                          echo "This will run regardless of the previous stage's outcome."
+                      }
+                  }
+              }
+
+or 
+
+using try catch block in scripted pipeline to handle exceptions and ensure that certain steps are executed even if an error occurs in the previous stage. For example:
+
+              node {
+                  stage('Build') {
+                      try {
+                          // build steps
+                      } catch (Exception e) {
+                          echo "Build failed: ${e.message}"
+                      }
+                  }
+                  stage('Test') {
+                      try {
+                          // test steps
+                      } catch (Exception e) {
+                          echo "Test failed: ${e.message}"
+                      }
+                  }
+                  stage('Post Actions') {
+                      // steps to run regardless of the previous stages' outcomes
+                      echo "This will run regardless of the previous stages' outcomes."
+                  }
+              }
+
+
+---
+
+21. How do you create stage dependency inside a pipeline?
+
+You can create stage dependencies inside a Jenkins pipeline using the "when" directive to specify conditions for when a stage should be executed. For example, if you want to run a "Test" stage only if the "Build" stage was successful, you can use the following syntax:
+
+              pipeline {
+                  agent any
+                  stages {
+                      stage('Build') {
+                          steps {
+                              // build steps
+                          }
+                      }
+                      stage('Test') {
+                          when {
+                              expression { return currentBuild.result == 'SUCCESS' }
+                          }
+                          steps {
+                              // test steps
+                          }
+                      }
+                  }
+              }
+
+---
+
+22. What is a Jenkinsfile?
+
+A Jenkinsfile is a text file that contains the definition of a Jenkins pipeline. 
+It is used to implement "pipeline as code" by defining the build process in a Groovy script that can be checked into source control.
+
+
+---
+
+23. What is a Multibranch Pipeline?
+
+A Multibranch Pipeline is a type of Jenkins pipeline that automatically discovers and manages branches in a source code repository.
+  It allows you to create a separate pipeline for each branch in your repository, and it automatically triggers builds for each branch when changes are detected. 
+  This is particularly useful for managing feature branches, release branches, and pull requests in a Git repository. The Multibranch Pipeline can be configured to use different Jenkinsfiles for different branches, allowing for customized build processes based on the branch being built.
+
+---
+
+24. What is Blue Ocean in Jenkins?
+
+Blue Ocean is a modern user interface for Jenkins that provides a more intuitive and visually appealing way to view and manage Jenkins pipelines.
+ It offers features such as a visual pipeline editor, improved visualization of pipeline stages and their status,
+
+---
+
+25. What is a build artifact?
+
+A build artifact is any file that is produced by a build process and is stored for later use. 
+This can include compiled code, libraries, documentation, or any other output generated during the build.
+
+---
+
+26. What is a workspace in Jenkins?
+
+A workspace in Jenkins is a directory on the Jenkins agent where the source code is checked out and the build process takes place.
+
+---
+
+27. What is an executor in Jenkins?
+An executor in Jenkins is a computational resource that is used to run builds. 
+Each Jenkins agent can have one or more executors, and each executor can run one build at a time.
+ Executors are responsible for executing the build steps defined in the Jenkins pipeline or job configuration.
+  The number of executors on a Jenkins agent can be configured based on the available resources and the expected workload.
+
+
+---
+
+28. How do you secure Jenkins?
+
+To secure Jenkins, you can follow these best practices:
+- Enable authentication and authorization to control access to Jenkins.
+- Use role-based access control to manage permissions for different users and groups.
+- Keep Jenkins and its plugins up to date to ensure that you have the latest security patches.
+- Use secure communication protocols (e.g., HTTPS) to protect data in transit.
+- Store sensitive information (e.g., credentials, secrets) securely using Jenkins credentials management.
+- Regularly audit Jenkins logs and configurations for any suspicious activity.
+- Limit the number of users with administrative privileges and regularly review user access.
+
+---
+
+29. What is credentials management in Jenkins?
+
+Credentials management in Jenkins refers to the process of securely storing and managing sensitive information such as usernames, passwords, API keys, and other authentication tokens used by Jenkins jobs and plugins.
+  Jenkins provides a built-in credentials management system that allows you to store and manage these credentials securely.
+  
+   You can create different types of credentials (e.g., username/password, secret text, SSH keys) and use them in your Jenkins pipelines and jobs without exposing sensitive information in the code or logs. 
+   This helps to enhance the security of your Jenkins environment by keeping sensitive data protected and reducing the risk of unauthorized access.
+---
+
+30. How do you integrate Jenkins with Docker?
+
+---
+
+31. How do you integrate Jenkins with Kubernetes?
+
+---
+
+32. What is pipeline as code?
+
+Pipeline as code is a practice of defining and managing Jenkins pipelines using code, typically in a Jenkinsfile.
+
+
+---
+
+33. What is the difference between freestyle and pipeline jobs?
+
+Freestyle jobs are a traditional type of Jenkins job that allows you to define build steps and post-build actions using a graphical user interface.
+Pipeline jobs, on the other hand, are defined using code (Jenkinsfile) and provide more flexibility and control over the build process.
+Table of differences:
+| Aspect               | Freestyle Job                          | Pipeline Job                            |
+|----------------------|----------------------------------------       |-----------------------------------------| 
+| Definition           | Defined using a graphical user interface      | Defined using code (Jenkinsfile)         |
+| Flexibility          | Limited flexibility in defining build steps   | More flexible, allows for complex build processes |
+| Version Control      | Not easily versioned                          | Easily versioned as it is defined in a Jenkinsfile stored in source control |
+| Parallel Execution   | Not natively supported, requires plugins      | Natively supports parallel execution of stages |
+| Error Handling       | Limited error handling capabilities           | Provides better error handling and recovery options |   
+| Reusability          | Limited reusability of build steps            | Allows for reusable code and shared libraries |
+| Visualization        | Basic visualization of build steps            | Provides a more visual representation of the pipeline stages and their status |
+| peer review          | Not easily peer-reviewed                      | Easily peer-reviewed as it is defined in code and can be stored in source control |
+
+---
+
+34. What is throttling in Jenkins?
+
+Throttling in Jenkins is a mechanism to limit the number of concurrent builds or jobs that can run on a Jenkins agent or across the entire Jenkins environment.
+ This can be useful to prevent resource contention and ensure that the Jenkins environment remains stable and responsive,
+
+---
+
+35. What are different types of build triggers in Jenkins?
+
+- SCM Polling: Jenkins periodically checks the source code repository for changes and triggers a build if any changes are detected.
+- Webhooks: Jenkins can be triggered by webhooks from version control systems (e.g., GitHub, GitLab) when specific events occur (e.g., code commit, pull request).
+- Scheduled Builds: Jenkins can be configured to run builds at specific times using a cron-like syntax
+- Manual Trigger: Users can manually trigger a build from the Jenkins UI.
+- Upstream/Downstream Trigger: Jenkins can trigger a build of one job after another job completes successfully using the "Build other projects" option in the job configuration.
+- Remote Trigger: Jenkins can be triggered remotely using the Jenkins API or command-line interface.
+
+
+---
+
+36. What is stash and unstash in Jenkins?
+
+Stash and unstash are features in Jenkins pipelines that allow you to temporarily store and retrieve files between different stages of a pipeline.
+Stash is used to save files or directories during a stage, and unstash is used to retrieve those files in a later stage. This can be useful when you need to share files between stages that are running on different agents or when you want to preserve files for later use in the pipeline. For example, you can stash build artifacts in one stage and then unstash them in a deployment stage to deploy the built artifacts to a server.
+---
+
+37. What is archiveArtifacts in Jenkins?
+
+archiveArtifacts is a build step in Jenkins that allows you to save files generated during the build process for later use. This is commonly used to store build artifacts such as compiled binaries, test reports, or any other files that need to be retained after the build completes.
+By using the archiveArtifacts step in a Jenkins pipeline, you can specify which files or directories to archive, and Jenkins will store them as part of the build artifacts. These archived artifacts can then be accessed and downloaded from the Jenkins UI or used in subsequent stages of the pipeline for deployment or further processing.
+---
+
+38. What is retry in Jenkins pipeline?
+
+Retry is a feature in Jenkins pipelines that allows you to automatically retry a stage or a block of code if it fails.
+ This can be useful for handling transient errors or flaky tests that might fail intermittently.
+By using the retry directive in a Jenkins pipeline, you can specify the number of times to retry a stage or block of code before considering it a failure. For example, if you have a stage that runs tests and you want to retry it up to 3 times if it fails, you can use the following syntax:
+
+              pipeline {
+                  agent any
+                  stages {
+                      stage('Test') {
+                          steps {
+                              retry(3) {
+                                  // test steps that might fail intermittently
+                              }
+                          }
+                      }
+                  }
+              }
+---
+
+39. What is timeout in Jenkins pipeline?
+
+Timeout is a feature in Jenkins pipelines that allows you to specify a time limit for a stage or a block of code.
+ If the execution of that stage or block exceeds the specified time limit, it will be aborted and marked as a failure. This can be useful for preventing builds from hanging indefinitely due to issues such as infinite loops, long-running processes, or unresponsive external services. By using the timeout directive in a Jenkins pipeline, you can ensure that your builds do not exceed a reasonable time limit and can fail gracefully if they do. For example, if you want to set a timeout of 30 minutes for a stage, you can use the following syntax:
+
+              pipeline {
+                  agent any
+                  stages {
+                      stage('Long Running Task') {
+                          steps {
+                              timeout(time: 30, unit: 'MINUTES') {
+                                  // long-running task steps
+                              }
+                          }
+                      }
+                  }
+              }
+
+---
+
+40. What challenges have you faced in Jenkins?
+
+---
+
+
+
+41. Your Jenkins build is failing randomly. How do you troubleshoot?
+
+---
+
+42. Your Jenkins job is very slow. How do you improve performance?
+
+---
+
+43. Disk space in Jenkins server is full. What will you do?
+
+---
+
+44. How do you run different stages based on environment (dev, qa, prod)?
+
+---
+
+45. How do you ensure steps run even if the build fails?
+
+---
+
+46. How do you trigger a job after another job completes successfully?
+
+---
+
+47. Jenkins is not triggering automatically on code commit. What will you check?
+
+---
+
+48. How do you achieve zero-downtime deployment using Jenkins?
+
+---
+
+49. How do you implement approval before production deployment?
+
+---
+
+50. How do you store secrets securely in Jenkins?
+
+---
+
+51. How do you manage access for multiple users in Jenkins?
+
+---
+
+52. Jenkins master crashed. How do you recover?
+
+---
+
+53. How do you run jobs only at night?
+
+---
+
+54. Build works locally but fails in Jenkins. Why?
+
+---
+
+55. How do you reuse pipeline code across multiple projects?
+
+---
+
+56. How do you handle multiple repositories in a pipeline?
+
+---
+
+57. How do you stop duplicate builds running at the same time?
+
+---
+
+58. How do you configure notifications when a build fails?
+
+---
+
+59. How do you handle versioning in Jenkins builds?
+
+---
+
+60. You deployed the wrong version to production. What will you do?
+
+---
+
+61. How do you run tests faster in Jenkins?
+
+---
+
+62. Jenkins pipeline failed due to timeout. What will you do?
+
+---
+
+63. How do you use dynamic agents in Jenkins?
+
+---
+
+64. How do you deploy to multiple servers using Jenkins?
+
+---
+
+65. What will you do if a Jenkins plugin breaks the system?
+
+---
