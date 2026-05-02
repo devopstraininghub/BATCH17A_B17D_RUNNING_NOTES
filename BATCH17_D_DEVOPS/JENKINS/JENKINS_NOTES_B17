@@ -1884,5 +1884,718 @@ ADD the content
 
 
 
+======================================================================================================
+
+DATE: 1 MAY2026
+
+
+
+MAVEN:
+
+--------------------------------------------------
+WHAT IS MAVEN?
+--------------------------------------------------
+
+    Maven is a build automation and dependency
+    management tool used mainly for Java projects.
+
+    It helps to:
+
+        • Compile code
+        • Run tests
+        • Package application (JAR/WAR)
+        • Manage dependencies
+
+
+--------------------------------------------------
+WHY MAVEN IS REQUIRED?
+--------------------------------------------------
+
+    Maven is both a build automation tool and a
+    project management tool because it manages
+    dependencies, project structure, lifecycle,
+    and build process using pom.xml.
+
+mvn archetype:generate 
+
+    Maven solves:
+
+        • Automatic dependency download
+        • Standard project structure
+        • Easy build process
+        • Faster development
+
+ant 
+grade --> build.xml 
+--------------------------------------------------
+WHAT MAVEN DOES?
+--------------------------------------------------
+
+    Maven automates:
+
+        Source Code
+            ↓
+        Compile
+            ↓
+        Test
+            ↓
+        Package (JAR/WAR)
+            ↓
+        Deploy
+
+
+--------------------------------------------------
+MAVEN PROJECT STRUCTURE
+--------------------------------------------------
+
+    project/
+        src/
+            main/java
+            main/resources
+            test/java
+        pom.xml
+        target/
+
+    target/:
+        Output folder (build files)
+
+
+--------------------------------------------------
+WHAT IS pom.xml?
+--------------------------------------------------
+
+    pom.xml = Project Object Model
+
+    It is the heart of Maven project.
+
+    It defines:
+
+        • Project details
+        • Dependencies
+        • Plugins
+        • Build configuration
+
+
+--------------------------------------------------
+BASIC pom.xml STRUCTURE
+--------------------------------------------------
+
+    <project>
+        <modelVersion>4.0.0</modelVersion>
+
+        <groupId>com.example</groupId>
+        <artifactId>my-app</artifactId>
+        <version>1.0</version>
+
+        <dependencies>
+            <!-- dependencies -->
+			
+			<dependency>
+                 <groupId>org.seleniumhq.selenium</groupId>
+                 <artifactId>selenium-java</artifactId>
+                   <version>4.41.0</version>
+            </dependency>
+			
+			
+        </dependencies>
+    </project>
+
+
+--------------------------------------------------
+IMPORTANT ELEMENTS IN pom.xml
+--------------------------------------------------
+
+    groupId:
+        Organization/company name
+
+    artifactId:
+        Project name
+
+    version:
+        Project version
+
+    packaging:
+        jar / war
+
+    dependencies:
+        External libraries required
+
+
+--------------------------------------------------
+DEPENDENCY EXAMPLE
+--------------------------------------------------
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+        </dependency>
+    </dependencies>
+
+    Maven downloads dependencies automatically
+    from Maven Central Repository.
+
+
+--------------------------------------------------
+MAVEN LIFECYCLE (VERY IMPORTANT)
+--------------------------------------------------
+
+    validate
+    compile
+    test
+    package
+    verify
+    install
+    deploy
+
+Example:
+
+    mvn clean install
+
+
+--------------------------------------------------
+COMMON MAVEN COMMANDS
+--------------------------------------------------
+
+    mvn clean
+        Remove old build files
+
+    mvn compile
+        Compile code
+
+    mvn test
+        Run tests
+
+    mvn package
+        Create JAR/WAR
+
+    mvn install
+        Install in local repo
+
+    mvn clean install
+        Full build
+
+
+--------------------------------------------------
+MAVEN REPOSITORIES
+--------------------------------------------------
+
+    1) Local Repository
+        ~/.m2/
+
+    2) Central Repository
+        https://repo.maven.apache.org
+
+    3) Remote Repository 
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASE
+--------------------------------------------------
+
+    Developer pushes code → GitHub
+
+        ↓
+
+    Jenkins pipeline triggers
+
+        ↓
+
+    Maven builds project:
+
+            mvn clean package
+
+        ↓
+
+    WAR file generated
+
+        ↓
+
+    Deploy to Tomcat / Docker / Kubernetes
+
+
+--------------------------------------------------
+ADVANTAGES OF MAVEN
+--------------------------------------------------
+
+    • Dependency management
+    • Standard project structure
+    • Easy build automation
+    • Integration with Jenkins
+    • Reusable builds
+
+
+
+====================================================================
+JENKINS SHARED LIBRARIES :
+====================================================================
+
+--------------------------------------------------
+WHAT IS SHARED LIBRARY?
+--------------------------------------------------
+
+    Shared Library = Reusable Jenkins pipeline code
+
+    Instead of writing same pipeline code
+    again and again, we store it in one place
+    and reuse it across projects.
+
+
+--------------------------------------------------
+WHY WE NEED SHARED LIBRARY?
+--------------------------------------------------
+
+    Problem:
+
+        • Duplicate pipeline code
+        • Hard to maintain
+        • Changes needed in multiple jobs
+
+    Solution:
+
+        • Write once
+        • Use everywhere
+
+
+--------------------------------------------------
+SIMPLE USE CASE
+--------------------------------------------------
+
+    Scenario:
+
+        10 projects use same build steps:
+
+            • Checkout code
+            • Build using Maven
+            • Deploy
+
+    Without shared library:
+
+        Same code repeated in 10 pipelines ❌
+
+    With shared library:
+
+        One common function → reused everywhere ✅
+
+
+--------------------------------------------------
+STRUCTURE OF SHARED LIBRARY
+--------------------------------------------------
+
+    (Git Repo)
+
+    vars/
+        build.groovy
+
+    src/
+        (optional advanced code)
+
+    resources/
+        (files like templates)
+
+
+--------------------------------------------------
+SIMPLE EXAMPLE
+--------------------------------------------------
+
+Step 1: Create shared function
+
+    vars/build.groovy
+
+    def call() {
+        echo "Building application..."
+        sh 'mvn clean install'
+    }
+
+
+--------------------------------------------------
+Step 2: Use in Jenkinsfile
+--------------------------------------------------
+
+    @Library('my-shared-lib') _
+
+    pipeline {
+        agent any
+
+        stages {
+            stage('Build') {
+                steps {
+                    build()
+                }
+            }
+        }
+    }
+
+
+--------------------------------------------------
+HOW TO CONFIGURE IN JENKINS
+--------------------------------------------------
+
+    Manage Jenkins
+        → Global Pipeline Libraries
+
+    Add:
+
+        Name: my-shared-lib
+        Source: Git repo URL
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASE
+--------------------------------------------------
+
+    Common functions:
+
+        • build()
+        • test()
+        • deploy()
+        • dockerBuild()
+
+    Used across:
+
+        • Multiple microservices
+        • Multiple teams
+
+
+--------------------------------------------------
+ADVANTAGES
+--------------------------------------------------
+
+    • Code reuse
+    • Easy maintenance
+    • Standard pipelines
+    • Faster development
+
+
+--------------------------------------------------
+SIMPLE SUMMARY
+--------------------------------------------------
+
+    Shared Library = Common reusable pipeline code
+
+    Write once → Use in many Jenkins pipelines
+
+
+======================================================================
+CACHING IN JENKINS 
+====================================================================
+
+--------------------------------------------------
+WHAT IS CACHING?
+--------------------------------------------------
+
+    Caching = Storing frequently used data
+              to reuse later.
+
+    Purpose:
+
+        • Avoid repeating same work
+        • Speed up builds
+
+
+--------------------------------------------------
+WHY CACHING IS NEEDED IN JENKINS?
+--------------------------------------------------
+
+    Without cache:
+
+        Every build:
+            • Downloads dependencies again
+            • Rebuilds everything
+
+        → Slow builds ❌
+
+    With cache:
+
+        • Reuse previous data
+        • Faster execution ✅
+
+
+--------------------------------------------------
+SIMPLE USE CASE (MAVEN)
+--------------------------------------------------
+
+    Scenario:
+
+        Jenkins builds Java project using Maven
+
+    First build:
+
+        • Downloads dependencies
+        • Stores in:
+
+            ~/.m2/repository
+
+    Next builds:
+
+        • Uses cached dependencies
+        • No re-download
+
+        → Faster build 🚀
+
+
+--------------------------------------------------
+WHERE CACHING HAPPENS?
+--------------------------------------------------
+
+    1) Workspace caching
+    2) Tool cache (Maven, npm, etc.)
+    3) Docker layer cache
+    4) Dependency cache
+
+
+--------------------------------------------------
+EXAMPLE – MAVEN CACHE
+--------------------------------------------------
+
+    pipeline {
+        agent any
+
+        stages {
+            stage('Build') {
+                steps {
+                    sh 'mvn clean package'
+                }
+            }
+        }
+    }
+
+    Maven uses:
+
+        ~/.m2/repository
+
+    as cache automatically.
+
+
+--------------------------------------------------
+EXAMPLE – NPM CACHE
+--------------------------------------------------
+
+    npm install
+
+    Cache location:
+
+        ~/.npm
+
+    Speeds up Node.js builds.
+
+
+--------------------------------------------------
+DOCKER CACHE (IMPORTANT)
+--------------------------------------------------
+
+    Docker uses layer caching.
+
+    If no change in layer:
+
+        → reused
+
+    Example:
+
+        docker build .
+
+    Only changed layers rebuild.
+
+
+--------------------------------------------------
+HOW TO IMPROVE CACHING IN JENKINS?
+--------------------------------------------------
+
+    • Use persistent workspace
+    • Use same agent/node
+    • Avoid deleting cache directories
+    • Use external cache storage if needed
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASE
+--------------------------------------------------
+
+    CI pipeline:
+
+        First build → 10 mins
+
+        Next builds → 2 mins
+
+    Reason:
+
+        Dependencies already cached
+
+
+--------------------------------------------------
+IMPORTANT NOTES
+--------------------------------------------------
+
+    • Cache improves performance
+    • But must manage properly
+    • Clear cache if corrupted
+
+
+--------------------------------------------------
+SIMPLE SUMMARY
+--------------------------------------------------
+
+    Caching = Reuse previous data
+
+    Benefit:
+        Faster builds
+
+    Example:
+        Maven dependencies cached in ~/.m2
+
+
+
+
+*************************************************************************************************
+====================================================================
+JENKINS "WHEN" CONDITION – SIMPLE NOTES
+====================================================================
+
+--------------------------------------------------
+WHAT IS "WHEN" IN JENKINS?
+--------------------------------------------------
+
+    "when" is used to run a stage only
+    when a condition is TRUE.
+
+    It controls pipeline execution.
+
+
+--------------------------------------------------
+WHY DO WE USE "WHEN"?
+--------------------------------------------------
+
+    • Avoid unnecessary steps
+    • Run stages based on conditions
+    • Improve pipeline efficiency
+
+
+--------------------------------------------------
+SYNTAX
+--------------------------------------------------
+
+    stage('Deploy') {
+        when {
+            condition
+        }
+        steps {
+            // actions
+        }
+    }
+
+
+--------------------------------------------------
+SIMPLE USE CASE (BRANCH BASED)
+--------------------------------------------------
+
+    Scenario:
+
+        Deploy only if branch = main
+
+Example:
+
+    pipeline {
+        agent any
+
+        stages {
+            stage('Build') {
+                steps {
+                    echo "Building..."
+                }
+            }
+
+            stage('Deploy') {
+                when {
+                    branch 'main'
+                }
+                steps {
+                    echo "Deploying to production..."
+                }
+            }
+        }
+    }
+
+    Result:
+
+        main branch → Deploy runs ✅
+        other branch → Deploy skipped ❌
+
+
+--------------------------------------------------
+COMMON WHEN CONDITIONS
+--------------------------------------------------
+
+1) Branch condition:
+
+    when {
+        branch 'main'
+    }
+
+2) Environment condition:
+
+    when {
+        environment name: 'ENV', value: 'prod'
+    }
+
+3) Expression (custom logic):
+
+    when {
+        expression {
+            return env.BUILD_NUMBER.toInteger() > 5
+        }
+    }
+
+4) Changeset:
+
+    when {
+        changeset "**/*.java"       ###  Any Java file changed anywhere in project
+    }
+
+5) Tag-based:
+
+    when {
+        tag "v*"
+    }
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASE
+--------------------------------------------------
+
+    Scenario:
+
+        • Build → always
+        • Test → always
+        • Deploy → only for production
+
+    Benefit:
+
+        Avoid accidental deployments
+
+
+--------------------------------------------------
+IMPORTANT NOTES
+--------------------------------------------------
+
+    • Works in Declarative Pipeline
+    • Evaluated before stage execution
+    • Skips stage if condition fails
+
+
+--------------------------------------------------
+SIMPLE SUMMARY
+--------------------------------------------------
+
+    when = condition to run a stage
+
+    If TRUE → stage runs
+    If FALSE → stage skipped
+
+    Used for:
+        Branch, env, logic-based execution
+		
+		
+
 
 
