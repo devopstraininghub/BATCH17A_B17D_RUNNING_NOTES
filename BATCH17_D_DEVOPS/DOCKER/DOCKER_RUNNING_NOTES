@@ -1,0 +1,192 @@
+
+DATE: 4 MAY 2026
+
+Docker :
+Docker is a containerization tool that allows you to package an application along with all its dependencies (code, libraries, runtime, system tools) into a single unit.
+
+It helps create, deploy, and run applications consistently across different environments.
+
+Docker is lightweight, portable, and open-source.
+
+======================
+What is a Docker Image?
+
+A Docker image is a read-only template used to create containers.
+
+It includes: 
+   Application code   
+   Runtime (e.g., Java, Python)   
+   Libraries and dependencies   
+   Configuration files
+   
+Images are static and can be stored in registries (like Docker Hub / ECR / GCR ..) 
+======================
+What is a Docker Container?
+
+     A Docker container is a running instance of a Docker image.     
+     It is lightweight and isolated, but shares the host OS kernel.     
+     A container includes everything needed to run the application, providing consistency across environments.
+	 
+======================	 
+	 
+4. Docker Architecture
+
+Docker architecture consists of these key components:
+
+      Docker Client – Command-line interface to communicate with Docker.
+      
+      Docker Daemon – Background service that manages containers and images.
+      
+      Docker Images – Read-only templates to create containers.
+      
+      Docker Containers – Running instances of images.
+      
+      Docker Registry – Stores and distributes Docker images (e.g., Docker Hub/ecr/gcr).
+
+
+====================================
+
+
+docker -v  
+docker --version  
+docker info  
+docker images  
+docker pull <iname>  
+docker run amazonlinx -- container will be created and exited immediately
+  
+docker run -it <iid/imagename> --- enters into container  
+docker run -it --name <contname> <iid/imagename> 
+exit  --> container gets stoped 
+ctrl + p + q 
+============
+
+
+
+docker ps  -a 
+docker ps ( only running containers )  
+docker start cid/cname
+docker stop cid/cname
+docker pause cid/cname
+docker unpause cid/cname
+
+docker rm cid/cname
+
+docker rm -f cid/cname
+
+=============================================
+
+docker attach cid --> 
+This command attaches your terminal to the running container’s primary process (PID 1). 
+It connects you to the standard input (STDIN), output (STDOUT), and error (STDERR) 
+It doesn’t start a new process or give you a shell by default. 
+
+
+docker exec -it <cid/cname> /bin/bash  
+
+This command executes a new process (/bin/bash, a shell) inside the running container and 
+connects your terminal to it interactively 
+Starts a new shell session inside the container, independent of the main process. 
+
+
+====================================================
+docker rmi iid  
+docker rmi iid  --force  
+docker rmi -f iid   
+
+========================================
+docker run -itd <iid/imagename>  ----------------- 
+docker commit <cid> 
+docker tag iid <reponame>:<tag> 
+
+docekr rm $(docker ps -aq)  
+docker rmi $(docker images -q)  ------ 
+
+======================
+
+
+
+root@dockerhost opt]# history
+    1  docker -v
+    2  yum install docker -y
+    3  docker -v
+    4  systemctl start docker
+    5  systemctl status docker
+    6  docker info
+    7  cd /var/lib/docker/
+    8  ll
+    9  cd /opt/
+   10  ll
+   11  docker images
+   12  docker search amazonlinux
+   13  docker images
+   14  docker pull amazonlinux
+   15  docker images
+   16  docker pull ubuntu
+   17  docker images
+   18  docker pull centos
+   19  docker pull tomcat
+   20  docker images
+   21  docker run amazonlinux
+   22  docker ps -a
+   23  docker run ubuntu
+   24  docker ps -a
+   25  docker run -it amazonlinux
+   26  docker ps -a
+   27  docker run -it --name cont1 amazonlinux
+   28  docker ps -a
+   29  docker ps
+   30  docker ps -a
+   31  docker rename quizzical_tu cont2
+   32  docker ps -a
+   33  docker rename optimistic_wright cont3
+   34  docker ps
+   35  docker ps -a
+   36  docker start cont2
+   37  docker ps -a
+   38  docker start cont3
+   39  docker ps -a
+   40  docker pause cont1
+   41  docker ps -a
+   42  docker unpause cont1
+   43  docker ps -a
+   44  docker attach cont1
+   45  docker ps -a
+   46  docker start cont1
+   47  docker ps -a
+   48  docker exec -it cont1 /bin/bash
+   49  docker ps -a
+   50  docker exec -it cont1 /bin/bash
+   51  docker ps -a
+   52  docker stop f073d59ecc22
+   53  docker ps -a
+   54  docker rm cont1
+   55  docker ps -a
+   56  docker rm cont2
+   57  docker rm -f cont2
+   58  docker ps -a
+   59  docker images
+   60  docker rmi0b1ebe5dd426
+   61  docker rmi 0b1ebe5dd426
+   62  docker rmi -f 0b1ebe5dd426
+   63  docker images
+   64  docker ps -a
+   65  docker ps -aq
+   66  docker rm -f $(docker ps -aq)
+   67  docker images
+   68  docker images -q
+   69  docker rmi $(docker images -q)
+   70  docker images
+   71  docker ps -a
+   72  docker run -it --name cont1 amazonlinux
+   73  docker ps
+   74  docker run -it --name cont2 amazonlinux
+   75  docker ps
+   76  docker commit cont1
+   77  docker images
+   78  docker run -it --name cont3 b12039e94c4a
+   79  docker run -it --name cont4 b12039e94c4a
+   80  docker images
+   81  docker tag b12039e94c4a amazonlinux:git
+   82  docker imags
+   83  docker images
+   84  history
