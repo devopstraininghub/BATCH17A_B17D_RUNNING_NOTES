@@ -435,6 +435,8 @@ cd /usr/sbin/
 cd /var/www/html/ 
 yum install vim -y  
 vim index.html  
+
+
 ==============================================
 docker cp src dest  
 docker cp index.html fb_httpd_cont2:/var/www/html/index.html 
@@ -644,4 +646,250 @@ root@dockerhost opt]# history
 
 
 
+DATE:  6 MAY 2026
+
+
+docker history imagename:tag
+
+
+docker logs cid 
+docker logs -f cont-id
+docker logs --tail 100 cont-id
+docker logs --since 10m cont-id
+
+------------------
+
+docker home path --> /var/lib/docker 
+---------
+
+Docker Container - ephemeral nature : 
+
+Docker containers are ephemeral by design, meaning they are temporary and stateless. Once a container stops or is deleted, any data or changes made inside it during its runtime are lost unless explicitly preserved 
+
+DOCKER VOLUMES  
+docker volume create my_volume 
+
+
+docker run -it -v HVolume:/opt/prod_logs image
+
+docker run -d -v my_volume:/container/path   my_image 
+
+
+Usage:  docker volume COMMAND
+
+Manage volumes
+
+Commands:
+  create      Create a volume
+  inspect     Display detailed information on one or more volumes
+  ls          List volumes
+  prune       Remove unused local volumes
+  rm          Remove one or more volumes
+  update      Update a volume (cluster volumes only)
+
+--------------------------------- 
+BIND MOUNTS  
+docker run -v /host/path:/container/path my-image 
+docker run -it --name cont2 -v /opt:/opt/logs iname 
+
+============================================
+
+
+
+====================================================================
+DOCKER VOLUMES 
+====================================================================
+
+--------------------------------------------------
+WHAT IS A DOCKER VOLUME?
+--------------------------------------------------
+
+    Docker Volume is a storage mechanism
+    used to persist container data.
+
+    By default:
+
+        Container data is temporary.
+
+    If container is deleted:
+
+        Data is also deleted ❌
+
+    Volumes solve this problem ✅
+
+
+--------------------------------------------------
+WHY DO WE NEED VOLUMES?
+--------------------------------------------------
+
+    Containers are ephemeral (temporary).
+
+    Without volume:
+
+        Container deleted → Data lost
+
+    With volume:
+
+        Data survives even if container is removed
+
+
+--------------------------------------------------
+SIMPLE USE CASE
+--------------------------------------------------
+
+    Scenario:
+
+        MySQL container stores database data.
+
+    Without volume:
+
+        Container removed → Database lost ❌
+
+    With volume:
+
+        Data stored outside container ✅
+
+
+--------------------------------------------------
+HOW VOLUMES WORK
+--------------------------------------------------
+
+    Container
+        ↓
+    Mounted volume
+        ↓
+    Data stored on host machine
+
+
+--------------------------------------------------
+TYPES OF DOCKER STORAGE
+--------------------------------------------------
+
+    1) Volumes
+    2) Bind Mounts
+	3) 
+
+
+--------------------------------------------------
+1) DOCKER VOLUMES (RECOMMENDED)
+--------------------------------------------------
+
+    Managed by Docker.
+
+    Stored in:
+
+        /var/lib/docker/volumes/
+
+Example:
+
+    docker volume create myvolume
+
+Run container:
+
+    docker run -d  -v myvolume:/app/data  nginx
+
+
+--------------------------------------------------
+2) BIND MOUNTS
+--------------------------------------------------
+
+    Maps host directory directly  into container.
+
+Example:
+
+    docker run -d -v /opt/logs:/opt/los amazonlinux
+
+    Left side:
+        Host path
+
+    Right side:
+        Container path
+
+
+--------------------------------------------------
+3) TMPFS MOUNTS
+--------------------------------------------------
+
+    Temporary in-memory storage.
+
+    Data lost after container stops.
+
+
+--------------------------------------------------
+IMPORTANT DOCKER VOLUME COMMANDS
+--------------------------------------------------
+
+Create volume:
+
+    docker volume create myvolume
+
+List volumes:
+
+    docker volume ls
+
+Inspect volume:
+
+    docker volume inspect myvolume
+
+Remove volume:
+
+    docker volume rm myvolume
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASES
+--------------------------------------------------
+
+    • Database persistence
+    • Jenkins home directory
+    • Shared logs
+    • Application uploads
+    • Persistent configs
+
+
+--------------------------------------------------
+JENKINS EXAMPLE
+--------------------------------------------------
+
+    docker run -d -p 8080:8080 -v jenkisdata:/var/jenkins_home  jenkins/jenkins:lts
+
+    Jenkins data remains safe even
+    if container restarts.
+
+
+--------------------------------------------------
+VOLUME VS BIND MOUNT
+--------------------------------------------------
+
+    Volume:
+
+        • Managed by Docker
+        • More portable
+        • Recommended
+
+    Bind Mount:
+
+        • Direct host path
+        • More control
+        • Host dependent
+
+
+--------------------------------------------------
+ADVANTAGES OF VOLUMES
+--------------------------------------------------
+
+    • Persistent storage
+    • Data survives container deletion
+    • Easy backup
+    • Share data between containers
+
+
+--------------------------------------------------
+SIMPLE SUMMARY
+--------------------------------------------------
+
+    Docker Volume = Persistent container storage
+
+    Purpose:
+        Keep data safe outside container
 
