@@ -324,3 +324,161 @@ Yes, you can automate configuration on the Ansible control node (master server) 
 - Verify passwordless SSH: ---> ssh localhost
 =====================
 
+
+DATE: 6 JULY 2026
+
+---
+- name: Install and Configure Apache HTTP Server
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable httpd service  ## systemctl start httpd && systemctl enable httpd
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Deploy index.html
+      copy:
+        src: /opt/index.html
+        dest: /var/www/html/index.html
+      tags: copy_index
+
+    - name: Service status
+      shell: "systemctl status httpd"
+      tags: copy_index
+      register: status_register
+      tags: status
+
+    - name: Service status op using debug module
+      debug:
+        var: status_register.stdout
+      tags: status
+
+
+
+=======================================
+ANSIBLE HANDLERS 
+
+Ansible handlers are special tasks that run only when notified by another task. They are mainly used to restart, reload, or perform actions only if a change has occurred, making playbooks more efficient.
+
+Why do we need handlers?
+
+Without handlers, a service might restart every time the playbook runs, even when nothing has changed.
+
+cat 2-httpd_handlers.yaml
+
+---
+- name: Install and Configure Apache HTTP Server
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable httpd service  ## systemctl start httpd && systemctl enable httpd 
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Deploy index.html
+      copy:
+        src: /opt/index.html
+        dest: /var/www/html/index.html
+      notify: Restart httpd
+      tags: copy_index
+
+
+    - name: httpd service staus
+      shell: systemctl status httpd
+      register: status_register
+      tags: status
+
+    - name: Disply status of register variable
+      debug: 
+        var: status_register.stdout
+      tags: status
+
+  handlers:
+
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+
+=================================================================
+
+
+WHY ANSIBLE ROLES ??
+
+Modularization	
+        Breaks down playbooks into smaller, reusable, and independent units of configuration.
+		
+Reusability	
+          Roles can be reused across different playbooks or projects, reducing duplication.
+		  
+Maintainability	
+         Makes it easier to maintain and update configurations by organizing them into distinct sections.
+		 
+Scalability	
+            Helps manage complex systems and scale automation as infrastructure grows.
+Collaboration	
+          Provides a clear structure that improves team collaboration by dividing tasks into specific roles.
+
+==============================================
+
+ROLES:
+
+sudo ansible-galaxy init <rolename>
+
+sudo ansible-galaxy init httpdsetup
+sudo ansible-galaxy init jenkinssetup
+sudo ansible-galaxy init xyz
+sudo ansible-galaxy init git
+
+cat rolespractice/mainplaybook.yaml
+
+
+---
+- hosts: all
+  become: yes
+  roles:
+    - httpdsetup
+    - jenkinssetup
+    - xyz
+    - git
+
+
+===========================
+ANSIBLE ROLES :
+
+your_role_name/
+├── defaults/
+│   └── main.yml          # Default variables (lowest priority)
+├── vars/
+│   └── main.yml          # Variables with higher priority
+├── files/
+│   └── ...               # Static files to copy (e.g., config files, packages)
+├── templates/
+│   └── ...               # Jinja2 templates (e.g., .j2 files)
+├── tasks/
+│   └── main.yml          # Main list of tasks to run
+├── handlers/
+│   └── main.yml          # Handlers triggered by tasks (e.g., service restart)
+├── meta/
+│   └── main.yml          # Role metadata (dependencies, author info)
+├── README.md             # Documentation (optional but recommended)
+└── tests/
+    └── test.yml          # Test playbook to verify role
+
