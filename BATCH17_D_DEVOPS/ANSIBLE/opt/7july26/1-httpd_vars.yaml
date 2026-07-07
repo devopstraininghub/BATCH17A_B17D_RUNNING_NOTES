@@ -1,0 +1,14 @@
+
+---
+- name: setup httpd 
+  become: yes
+  hosts: all
+
+  vars:
+    package: docker
+
+  tasks:
+    - name: install httpd 
+      yum: 
+        name: "{{ package }}" 
+        state: present

@@ -1,0 +1,11 @@
+
+[appservers]
+172.31.6.70
+
+
+[jenkins_servers]
+172.31.8.245
+
+[utilservers]
+
+localhost

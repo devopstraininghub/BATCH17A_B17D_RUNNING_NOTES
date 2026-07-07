@@ -1,0 +1,19 @@
+
+---
+- name: setup httpd 
+  become: yes
+  hosts: all
+
+  vars_files:
+    - vars.yaml
+
+  tasks:
+    - name: install httpd 
+      yum: 
+        name: "{{ package }}" 
+        state: present
+
+    - name: start httpd
+      service:
+        name: "{{ service }}"
+        state: started
