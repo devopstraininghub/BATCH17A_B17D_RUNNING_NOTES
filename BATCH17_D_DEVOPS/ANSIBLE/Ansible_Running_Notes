@@ -481,4 +481,1076 @@ your_role_name/
 ├── README.md             # Documentation (optional but recommended)
 └── tests/
     └── test.yml          # Test playbook to verify role
+==============================================================
+
+
+====================================================================
+ANSIBLE ROLES
+--------------------------------------------------
+WHAT IS AN ANSIBLE ROLE?
+--------------------------------------------------
+
+    Ansible Role is a way to organize
+    playbooks, variables, tasks, files,
+    templates and handlers into a standard
+    directory structure.
+
+    Role helps in:
+
+        • Code Reusability
+        • Easy Maintenance
+        • Better Organization
+
+
+====================================================================
+WHY DO WE NEED ROLES?
+====================================================================
+
+Imagine you want to install Apache (httpd)
+
+Without Roles:
+
+    Everything is written in one playbook.
+
+        • Variables
+        • Tasks
+        • Templates
+        • Handlers
+
+    The playbook becomes very large and difficult to manage.
+
+
+With Roles:
+
+    Everything is divided into folders. Much cleaner and reusable.
+
+
+====================================================================
+WITHOUT ROLES
+====================================================================
+
+install_httpd.yml
+
+--------------------------------
+
+vars
+
+tasks
+
+handlers
+
+templates
+
+files
+
+All written in one file.
+
+--------------------------------
+
+Large playbook ❌ Hard to maintain.
+
+
+====================================================================
+WITH ROLES
+====================================================================
+
+project/
+
+    roles/
+
+        apache/
+
+            tasks/
+
+            handlers/
+
+            templates/
+
+            files/
+
+            vars/
+
+            defaults/
+
+            meta/
+
+            README.md
+
+Very clean ✅
+
+
+====================================================================
+ROLE DIRECTORY STRUCTURE
+====================================================================
+
+project/
+
+    inventory
+
+    playbook.yml
+
+    roles/
+
+        apache/
+
+            tasks/
+                main.yml
+
+            handlers/
+                main.yml
+
+            templates/
+
+            files/
+
+            vars/
+                main.yml
+
+            defaults/
+                main.yml
+
+            meta/
+                main.yml
+
+            README.md
+
+
+====================================================================
+ROLE FOLDERS EXPLAINED
+====================================================================
+
+tasks/
+    Contains all tasks.
+
+Example:
+    Install package
+    Start service
+
+
+--------------------------------
+
+handlers/
+   Contains handlers.
+
+Example:
+    Restart Apache
+    Restart Nginx
+
+
+--------------------------------
+
+templates/
+
+  Stores Jinja2 template files.
+
+Example:
+    index.html.j2
+    nginx.conf.j2
+
+
+--------------------------------
+
+files/ 
+   Stores static files.
+
+Example:
+
+    logo.png
+    index.html
+
+
+--------------------------------
+
+vars/
+
+Stores variables.
+Higher priority variables.
+
+Example:
+    package=httpd
+
+
+--------------------------------
+
+defaults/
+   Stores default variables.
+   Lowest priority.
+   Can be overridden.
+   
+--------------------------------
+
+meta/
+
+Stores role metadata. Dependency information.
+
+
+====================================================================
+MAIN FILES
+====================================================================
+
+Every folder usually contains:
+main.yml
+
+Example:
+
+   tasks/main.yml   
+   handlers/main.yml   
+   vars/main.yml
+
+Ansible automatically loads:
+
+main.yml
+
+
+====================================================================
+CREATING ROLE
+====================================================================
+
+Command
+
+ansible-galaxy init apache
+
+Output
+
+roles/
+
+    apache/
+
+        tasks
+
+        handlers
+
+        templates
+
+        vars
+
+        defaults
+
+        files
+
+        meta
+
+Everything created automatically.
+
+
+
+====================================================================
+REAL DEVOPS PROJECT
+====================================================================
+
+Company has:
+
+10 Applications
+
+Every application needs:
+
+    • Java
+
+    • Tomcat
+
+    • Docker
+
+    • Nginx
+
+Instead of writing
+same tasks repeatedly,
+
+Create roles:
+
+roles/
+
+    java/
+
+    tomcat/
+
+    docker/
+
+    nginx/
+
+Reuse them everywhere.
+
+
+====================================================================
+MULTIPLE ROLES
+====================================================================
+
+playbook.yml
+
+--------------------------------
+
+- hosts: web
+
+  roles:
+
+    - java
+
+    - tomcat
+
+    - nginx
+
+--------------------------------
+
+Execution order:
+
+Java
+
+↓
+
+Tomcat
+
+↓
+
+Nginx
+
+
+
+====================================================================
+ADVANTAGES
+====================================================================
+
+• Reusable
+
+• Organized code
+
+• Easy maintenance
+
+• Modular design
+
+• Easy teamwork
+
+• Production standard
+
+
+
+DATE: 7 JULY 2026
+====================================================================
+ANSIBLE VARIABLES 
+====================================================================
+
+Variables are used to store values that can be reused
+throughout the playbook.
+
+Instead of hardcoding values like:
+
+    httpd
+    nginx
+    ec2-user
+
+We store them in variables.
+
+====================================================================
+WHY DO WE NEED VARIABLES?
+====================================================================
+
+Without Variables:
+
+--------------------------------------------------
+
+- hosts: all
+  become: yes
+
+  tasks:
+
+  - yum:
+      name: httpd
+      state: present
+
+--------------------------------------------------
+
+Tomorrow if package changes to nginx,
+you need to edit the playbook.
+
+===================================================
+
+With Variables:
+
+--------------------------------------------------
+
+
+- hosts: web
+
+  vars:
+    package: httpd
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+--------------------------------------------------
+
+Tomorrow:
+
+    package: nginx
+
+No playbook changes required.
+
+====================================================================
+VARIABLE SYNTAX
+====================================================================
+
+    {{ variable_name }}
+
+Example:
+
+    "{{ package }}"
+    "{{ username }}"
+
+====================================================================
+WAYS TO DEFINE VARIABLES
+====================================================================
+
+1. vars
+2. vars_files
+3. Inventory Variables
+4. Group Variables
+5. Host Variables
+6. Extra Variables (-e)
+7. Registered Variables
+
+====================================================================
+1) PLAYBOOK VARIABLES (vars)
+====================================================================
+
+Variables are written directly
+inside the playbook.
+
+Example:
+
+------------------------------------
+
+- hosts: web
+
+  vars:
+
+    package: httpd
+    service: httpd
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+  - service:
+      name: "{{ service }}"
+      state: started
+
+------------------------------------
+
+Best For:
+
+    • Small playbooks
+    • Testing
+
+====================================================================
+2) VARIABLE FILE (vars_files)
+====================================================================
+
+Instead of storing variables inside playbook, store them separately.
+
+Project:
+
+project/
+
+    playbook.yml
+    vars.yml
+
+------------------------------------
+
+vars.yml
+
+package: nginx
+service: nginx
+port: 80
+
+------------------------------------
+
+playbook.yml
+
+- hosts: web
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+------------------------------------
+
+Benefits:
+
+    • Cleaner playbook
+    • Easy maintenance
+    • Reusable variables
+
+====================================================================
+3) INVENTORY VARIABLES
+====================================================================
+
+Variables stored in inventory.
+
+inventory.ini
+
+------------------------------------
+
+[web]
+
+server1 ansible_host=10.0.0.10 package=httpd
+
+server2 ansible_host=10.0.0.20 package=nginx
+
+------------------------------------
+
+Playbook:
+
+------------------------------------
+
+- hosts: web
+
+  tasks:
+
+  - debug:
+      msg: "{{ package }}"
+
+---------------- OR  -----------------
+
+- hosts: web
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+------------------------------------
+
+Output:
+
+server1 ---> httpd
+
+server2 ---> nginx
+
+Best For:  Different servers use  different values.
+
+====================================================================
+4) GROUP VARIABLES
+====================================================================
+
+Directory Structure
+
+project/
+
+group_vars/
+
+    web.yml
+    db.yml
+
+inventory.ini
+------------------------------------
+
+[web]
+
+server1
+server2
+
+------------------------------------
+
+group_vars/web.yml
+
+package: httpd
+
+------------------------------------
+group_vars/db.yml
+
+package: mysql
+
+
+Playbook
+
+- hosts: web
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+------------------------------------
+
+Every web server installs ---> httpd
+
+Very common in production.
+
+====================================================================
+5) HOST VARIABLES
+====================================================================
+
+Directory
+
+host_vars/
+    server1.yml
+    server2.yml
+
+------------------------------------
+
+host_vars/server1.yml
+
+package: nginx
+
+------------------------------------
+
+host_vars/server2.yml
+
+package: httpd
+
+------------------------------------
+
+Playbook
+
+- hosts: web
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+------------------------------------
+
+Result
+
+server1 -- nginx
+
+server2 --  httpd
+
+Best For:
+
+Every server needs its own configuration.
+
+====================================================================
+6) EXTRA VARIABLES (-e)
+====================================================================
+
+Passed while running playbook.
+
+Example
+
+ansible-playbook install.yml -e "package=httpd"
+
+or
+
+ansible-playbook install.yml \
+-e "package=nginx"
+
+Playbook
+
+------------------------------------
+
+- hosts: web
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+------------------------------------
+
+No need to edit playbook.
+
+Very useful in:
+
+    Jenkins
+    GitHub Actions
+    Azure DevOps
+
+====================================================================
+REAL-TIME EXAMPLE
+====================================================================
+
+Development
+
+ansible-playbook app.yml \
+-e "env=dev"
+
+Production
+
+ansible-playbook app.yml \
+-e "env=prod"
+
+Same playbook
+Different environment.
+
+====================================================================
+7) REGISTER VARIABLES
+====================================================================
+
+Stores output of a task.
+
+Example
+
+------------------------------------
+
+- command: hostname
+  register: host
+
+------------------------------------
+
+Display output
+
+------------------------------------
+
+- debug:
+    var: host.stdout
+
+------------------------------------
+
+Output--> ip-172-31-10-20
+
+Useful for:
+   hostname
+   uptime
+   disk usage
+   command output (systemctl status httpd) 
+
+====================================================================
+REGISTER EXAMPLE
+====================================================================
+
+- command: df -h /
+  register: disk
+
+- debug:
+    msg: "{{ disk.stdout }}"
+
+====================================================================
+VARIABLE PRECEDENCE
+====================================================================
+
+Lowest Priority
+
+       Playbook vars       
+       ↓       
+       Inventory vars       
+       ↓       
+       Group vars       
+       ↓       
+       Host vars       
+       ↓       
+       Extra vars (-e)
+       
+  Highest Priority
+
+Example
+
+Playbook
+package=httpd
+
+Group vars
+package=apache
+
+Extra vars
+package=nginx
+
+Output:
+nginx
+
+Because Extra vars have highest priority.
+
+====================================================================
+REAL DEVOPS PROJECT
+====================================================================
+
+Inventory
+
+------------------------------------
+
+[web]
+
+web1
+web2
+
+[db]
+
+db1
+
+------------------------------------
+
+group_vars/web.yml
+
+package: nginx
+
+------------------------------------
+
+group_vars/db.yml
+
+package: mysql
+
+------------------------------------
+
+Playbook
+
+- hosts: all
+
+  tasks:
+
+  - yum:
+      name: "{{ package }}"
+      state: present
+
+------------------------------------
+
+Result
+
+Web servers --> Install nginx
+
+Database server--> Install mysql
+
+Single playbook
+Different results
+
+====================================================================
+WHICH VARIABLE TYPE IS USED MOST?
+====================================================================
+
+Small Projects
+    vars
+
+Medium Projects
+
+    vars_files
+
+Production
+
+    group_vars
+    host_vars
+
+CI/CD Pipelines
+
+    extra vars (-e)
+
+Dynamic Information
+    register
+
+====================================================================
+so 
+vars
+    → Inside playbook
+
+vars_files
+    → Separate YAML file
+
+Inventory vars
+    → Inside inventory.ini
+
+group_vars
+    → Common values for a group
+
+host_vars
+    → Values for one server
+
+extra vars (-e)
+    → Passed while executing playbook
+
+register
+    → Store command output
+	
+===========================================================
+
+Template module:
+
+====================================================================
+ANSIBLE TEMPLATE MODULE 
+====================================================================
+
+--------------------------------------------------
+WHAT IS TEMPLATE MODULE?
+--------------------------------------------------
+
+    The template module is used to copy a dynamic file from Ansible Control Node
+    to Managed Nodes.
+
+    It replaces variables inside the file  before copying.
+
+    Template files use:
+
+        .j2 extension
+
+Example:
+
+    httpd.conf.j2
+    index.html.j2
+    nginx.conf.j2
+
+
+====================================================================
+WHY DO WE NEED TEMPLATE MODULE?
+====================================================================
+
+Problem:
+
+Suppose you have 100 servers.
+
+Each server has different:
+
+    • Hostname
+    • IP Address
+    • Environment
+    • Port
+
+Without template:
+
+    Need to manually edit 100 files ❌
+
+With template:
+
+    One template file
+    Variables automatically replaced
+
+Very easy ✅
+====================================================================
+DIRECTORY STRUCTURE
+====================================================================
+
+project/
+
+    playbook.yml
+
+    templates/
+
+        index.html.j2
+
+
+====================================================================
+TEMPLATE FILE
+====================================================================
+
+templates/index.html.j2
+
+------------------------------------
+
+Welcome
+
+Hostname:
+
+{{ inventory_hostname }}
+{{ ansible_hostname }}
+
+Environment:
+
+{{ env }}
+
+------------------------------------
+
+
+====================================================================
+PLAYBOOK
+====================================================================
+
+- hosts: web
+
+  vars:
+
+    env: Production
+
+  tasks:
+
+  - template:
+
+      src: index.html.j2
+
+      dest: /var/www/html/index.html
+
+
+====================================================================
+TEMPLATE VS COPY MODULE
+====================================================================
+
+Copy Module
+
+    Copies file exactly as it is.
+
+    No variable replacement.
+
+
+Example
+
+copy:
+
+    src: file.txt
+
+    dest: /tmp/
+
+
+------------------------------------
+
+Template Module
+
+    Copies file
+
+    Replaces variables first.
+
+
+Example
+
+template:
+
+    src: file.j2
+
+    dest: /tmp/
+
+
+====================================================================
+REAL DEVOPS USE CASES
+====================================================================
+
+Template module is used for:
+
+    • Nginx configuration
+
+    • Apache configuration
+
+    • Tomcat server.xml
+
+    • Application properties
+
+    • index.html
+
+    • Database configuration
+
+    • Environment configuration
+
+
+====================================================================
+WHEN TO USE TEMPLATE?
+====================================================================
+
+Need same file on every server?
+
+Use:    copy
+
+Need different values  for each server?
+
+Use:    template
+
+================================================================
+
+
+
+ANSIBLE VS CHEF VS PUPPET VS SALT 
+
+====================
+
+QIIZ 
+
+
+
 
