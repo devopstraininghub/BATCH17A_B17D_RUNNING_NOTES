@@ -1552,5 +1552,365 @@ ANSIBLE VS CHEF VS PUPPET VS SALT
 QIIZ 
 
 
+============================================================
+
+
+DATE: 9 JULY 2026
+====================================================================
+ANSIBLE DYNAMIC INVENTORY – 
+--------------------------------------------------
+WHAT IS DYNAMIC INVENTORY?
+--------------------------------------------------
+
+    Dynamic Inventory allows Ansible to
+    automatically discover hosts at runtime.
+
+    Instead of manually adding servers to
+    inventory.ini, Ansible fetches server
+    information from cloud providers like AWS.
+
+    Inventory is generated dynamically.
+
+
+--------------------------------------------------
+WHY DO WE NEED DYNAMIC INVENTORY?
+--------------------------------------------------
+
+Problem with Static Inventory
+
+    inventory.ini
+
+        Web1
+        Web2
+        DB1
+
+Suppose AWS Auto Scaling launches:
+
+    Web3
+    Web4
+
+Need to manually update inventory.ini ❌
+
+
+Dynamic Inventory
+
+    Automatically detects new EC2 instances.
+
+    No manual updates required. ✅
+
+
+--------------------------------------------------
+REAL DEVOPS USE CASE
+--------------------------------------------------
+
+Company uses Auto Scaling Group.
+
+Morning:
+
+    5 EC2 instances
+
+Evening:
+
+    20 EC2 instances
+
+Midnight:
+
+    3 EC2 instances
+
+Static inventory:
+
+    Must update inventory manually ❌
+
+Dynamic inventory:
+
+    Automatically fetches running EC2 instances ✅
+
+
+--------------------------------------------------
+SUPPORTED SOURCES
+--------------------------------------------------
+
+    AWS EC2
+    Azure VM
+    GCP
+    VMware
+    OpenStack
+    Custom Scripts
+
+
+--------------------------------------------------
+AWS DYNAMIC INVENTORY SETUP
+--------------------------------------------------
+
+Step 1
+
+Install Ansible
+
+    yum install ansible -y
+
+
+--------------------------------------------------
+Step 2
+
+Install AWS Collection
+
+    ansible-galaxy collection install amazon.aws
+
+Provides:
+
+    aws_ec2 inventory plugin
+    ec2 modules
+    security group modules
+
+
+--------------------------------------------------
+Step 3
+
+Install Python Libraries
+
+    sudo yum install python3-boto3 python3-botocore -y
+
+Why?
+
+    boto3 is AWS SDK for Python.
+
+    Ansible uses boto3
+    to communicate with AWS APIs.
+
+
+--------------------------------------------------
+Step 4
+
+Configure AWS Credentials
+
+    aws configure
+
+Provide:
+
+    AWS Access Key
+
+    AWS Secret Key
+
+    Region
+
+Example
+
+    us-east-1
+
+
+--------------------------------------------------
+Step 5
+
+Create Inventory Directory
+
+    mkdir -p /opt/aws_inventory
+
+    cd /opt/aws_inventory
+
+
+--------------------------------------------------
+Step 6
+
+Create Inventory Plugin File
+
+aws_ec2.yml
+
+--------------------------------
+
+plugin: aws_ec2
+
+regions:
+  - us-east-1
+
+filters:
+  instance-state-name: running
+
+hostnames:
+  - private-ip-address
+
+compose:
+  ansible_host: private_ip_address
+
+keyed_groups:
+  - key: tags.Name
+    prefix: ""
+    separator: ""
+
+--------------------------------
+
+
+--------------------------------------------------
+WHAT DOES THIS FILE DO?
+--------------------------------------------------
+
+plugin
+
+    Uses AWS EC2 inventory plugin.
+
+
+regions
+
+    Search EC2 instances
+    in specified region.
+
+
+filters
+
+    Fetch only running instances.
+
+
+hostnames
+
+    Use Private IP
+    as inventory hostname.
+
+
+compose
+
+    Sets ansible_host.
+
+
+keyed_groups
+
+    Creates groups automatically
+    using EC2 Tags.
+
+
+--------------------------------------------------
+EXAMPLE
+--------------------------------------------------
+
+EC2 Tags
+
+Name = WebServer
+
+Name = AppServer
+
+Inventory becomes:
+
+WebServer
+
+    10.0.1.15
+
+AppServer
+
+    10.0.2.25
+
+
+Automatically.
+
+
+--------------------------------------------------
+VERIFY INVENTORY
+--------------------------------------------------
+
+Tree View
+
+ansible-inventory -i /opt/aws_inventory/aws_ec2.yml --graph
+
+
+Detailed JSON
+
+ansible-inventory \
+-i aws_ec2.yml --list
+
+
+--------------------------------------------------
+TEST CONNECTIVITY
+--------------------------------------------------
+ansible all -i /opt/aws_inventory/aws_ec2.yml -u ec2-user --private-key ~/.ssh/mykey.pem -m ping
+
+
+ansible -i /opt/aws_inventory/aws_ec2.yml all -m ping all 
+
+ansible all -i /opt/aws_inventory/aws_ec2.yml -u ec2-user --private-key ~/.ssh/b16ansible.pem -m ping
+
+--------------------------------------------------
+ADVANTAGES
+--------------------------------------------------
+
+• No manual inventory
+
+• Cloud friendly
+
+• Auto Scaling support
+
+• Automatic grouping
+
+• Production ready
+
+====================================================================
+ANSIBLE WHEN CONDITION
+====================================================================
+
+--------------------------------------------------
+WHAT IS WHEN?
+--------------------------------------------------
+
+    when is used to execute a task
+    only if a condition is TRUE.
+
+
+--------------------------------------------------
+SYNTAX
+--------------------------------------------------
+
+- name: Install Apache
+
+  yum:
+
+    name: httpd
+
+    state: present
+
+  when: ansible_os_family == "RedHat"
+
+
+--------------------------------------------------
+REAL-TIME EXAMPLE
+--------------------------------------------------
+
+Company has:
+
+Ubuntu Servers
+
+RHEL Servers
+
+Install Apache only
+on RHEL servers.
+
+Example
+
+--------------------------
+
+- yum:
+
+    name: httpd
+
+    state: present
+
+  when:
+
+    ansible_os_family == "RedHat"
+
+--------------------------
+
+
+Ubuntu servers skip this task.
+
+
+--------------------------------------------------
+MULTIPLE CONDITIONS
+--------------------------------------------------
+
+when:
+
+    ansible_os_family == "RedHat"
+
+    and
+
+    ansible_memtotal_mb > 2048
+
+
 
 
