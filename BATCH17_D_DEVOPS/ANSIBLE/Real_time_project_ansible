@@ -1,0 +1,239 @@
+public_ip_app = "44.222.213.180"
+public_ip_jenkins = "3.239.150.111"
+
+
+---------
+
+SONAR TOKEN:
+squ_af86c713b39640850624df3XXXXXXXXXXXXXXXXXX
+
+===============
+GIT HUB TOKEN 
+
+ghp_S0OBGQSRpkgTB3rOgbOkXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+--------------------------------------------------------------------
+
+PROJECT REPO: 
+https://github.com/devopstraininghub/REALTIMEPROJECT.git
+
+CONT DEPLOYMENT VS CONT DELIVERY 
+
+ CONT DEPLOYMENT :
+     - LAB 
+	 - SBOX 
+	 - STAGING 
+	 - UAT 
+	 - PRE-PROD
+	 
+ CONT DELIVERY: (ANSIBLE )  
+    - SERVICE NOW - Change Req(CHANGE REQUEST ) - CAB MEETING - 
+	- APPROVAL 
+	- PRODCUTION DEPLOY 
+
+
+======================================
+ANSIBLE -- > CONF AUTOMATION
+TERRAFORM - INFRA. AUTOMATION tool
+
+
+INSTALL  ( main.tf ) 
+
+terraform init 
+terraform plan  
+terraform apply ---> resources will be created on cloud provider 
+terraform destory 
+
+
+ANSIBLE -- CONF . AUTOMATION 
+
+
+==================================================================
+
+IT PROJECT ---> CORE SECTOR ---> IT 
+
+Client --100 requiremetns :
+
+TECH STACK :
+
+PLATFORM:
+==========
+CLOUD : AWS
+IAC TOOL : TERRAFORM 
+
+APP TECH STACK:
+=========
+PROG : JAVA 
+BUILD : MAVEN 
+VCS / SCM ---> GIT Hub & B.BUCKET
+CI/CD : JENKINS 
+CONF.AUTO/ CD :  ANSIBLE 
+CONT :  DOCKER 
+CONT ORCH : K8S 
+CODE QUALITY: SONARQUBE 
+IMAGE SCANING : TRIVY
+
+===========================================================
+
+ACTION PLAN :
+
+DEVELOPER ACTION: 
+ASSUME CODE IS READY IN  GIT HUB 
+
+DEVOPS ACTION TASKS :
+1. AWS ACCOUNT 
+2. IAM USER ( ROOT ) - CREDENTIALS ( ACCESS KEY /SECRET ACCESS KEY ) 
+
+AKIASB5M6Cxxxxxxxxxxxxxx
+zJvEN2Ezozxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+3. Install Terraform & write  HCL COF (.TF ) -- TO PROVISION INFRA
+4. ENV . SETUP 
+       - JENKNS 
+	   - MAVEN 
+	   - SONARQUBE 
+	   - DOCKER 
+	   - TRIVY 
+	   - ANSIBLE 
+	   - EKS 
+5. CI CD IMPLEMENTATUON 	   
+	   
+	  
+==================================
+
+
+argocd ---> conti . deployment 
+ansible ---> cont . delivery 
+
+===================================
+
+ 
+ 
+   kubectl installation on aws linux machine  
+
+# Install kubectl 
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" 
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" 
+
+echo "$(cat kubectl.sha256) kubectl" | sha256sum --check 
+
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl 
+ 
+ 
+ ==========================================
+# Install eksctl 
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
+sudo mv /tmp/eksctl /usr/local/bin 
+
+========================
+aws configure
+
+
+
+===========================
+
+eksctl create cluster --name b16cluster --nodegroup-name b16ng --node-type t3.micro --nodes 4 --managed 
+
+
+=========================
+Plugins:
+
+pipeline: stageview
+BlueOcean
+Docker
+Ansible 
+
+=================
+credentials manager :
+
+DockerHub
+github
+ssh
+
+================================================================
+
+
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Checkout Code') {
+            steps {
+                echo 'Checking out source code'
+                git branch: 'main', url: 'https://github.com/devopstraininghub/REALTIMEPROJECT.git'
+            }
+        }
+
+        stage('Build Jar') {
+            steps {
+                echo 'Running Maven build'
+                sh 'cd Application && mvn clean package'
+            }
+        }
+
+        stage('Sonar Scan') {
+            steps {
+                echo 'Running SonarQube scan'
+                sh '''
+                    cd Application
+                    mvn sonar:sonar \
+                      -Dsonar.host.url=http://3.239.150.111:9000 \
+                      -Dsonar.login=squ_eca609a8ebe82a0f38ac90a19e6b9f805149247e
+                '''
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker Image'
+                    sh 'cd Application && docker build -t devopshubg333/k8s:${BUILD_NUMBER} -f Dockerfile .'
+                }
+            }
+        }
+
+        stage('Docker Image Scan') {
+            steps {
+                sh 'trivy image devopshubg333/k8s:${BUILD_NUMBER}'
+            }
+        }
+
+        stage('Push Image to DockerHub') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+                        sh 'echo "${dockerhub}" | docker login -u devopshubg333 --password-stdin'
+                    }
+                    sh 'docker push devopshubg333/k8s:${BUILD_NUMBER}'
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment Manifest File') {
+            environment {
+                GIT_REPO_NAME = "REALTIMEPROJECT"
+                GIT_USER_NAME = "devopstraininghub"
+            }
+            steps {
+                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+                    sh '''
+                        git config user.email "madhu@gmail.com"
+                        git config user.name "madhu"
+
+                        sed -i "s|k8s:.*|k8s:${BUILD_NUMBER}|g" Ansible/k8s_deployment.yaml
+
+                        git add .
+                        git commit -m "Update deployment image tag to version ${BUILD_NUMBER}"
+                        git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+                    '''
+                }
+            }
+        }
+
+    }
+}
