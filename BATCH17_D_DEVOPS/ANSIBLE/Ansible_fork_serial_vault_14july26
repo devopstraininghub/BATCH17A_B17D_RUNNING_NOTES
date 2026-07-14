@@ -1,0 +1,968 @@
+
+DATE: 14 JULY 2026
+====================================================================
+ANSIBLE FORKS 
+====================================================================
+
+--------------------------------------------------
+WHAT ARE FORKS?
+--------------------------------------------------
+
+Forks determine how many managed hosts
+Ansible can connect to and execute tasks on
+at the same time (in parallel).
+
+Default:
+
+    5 forks
+
+Meaning:
+
+    By default, Ansible can execute a task
+    simultaneously on 5 servers.
+
+
+====================================================================
+WHY DO WE NEED FORKS?
+====================================================================
+
+Suppose you have:
+
+    100 Linux servers
+
+Task:
+
+    Install Nginx
+
+Without parallel execution:
+
+    Server1
+      ↓
+    Server2
+      ↓
+    Server3
+      ↓
+    ...
+      ↓
+    Server100
+
+Very slow ❌
+
+
+With Forks = 10
+
+    Server1      Server6
+
+    Server2      Server7
+
+    Server3      Server8
+
+    Server4      Server9
+
+    Server5      Server10
+
+All execute simultaneously ✅
+
+
+====================================================================
+DEFAULT VALUE
+====================================================================
+
+Default forks:
+
+    5
+
+Meaning:
+
+If you have
+
+20 servers
+
+Ansible works like:
+
+Batch 1
+
+    5 Servers
+
+↓
+
+Batch 2
+
+    5 Servers
+
+↓
+
+Batch 3
+
+    5 Servers
+
+↓
+
+Batch 4
+
+    5 Servers
+
+
+====================================================================
+HOW TO CHANGE FORKS?
+====================================================================
+
+Method 1
+
+Command Line
+
+ansible-playbook site.yml --forks 20
+
+
+--------------------------------------------------
+Method 2
+
+ansible.cfg
+
+forks = 20
+
+
+Example
+
+[defaults]
+
+forks = 20
+
+
+====================================================================
+REAL-TIME EXAMPLE
+====================================================================
+
+Company has
+
+200 EC2 servers
+
+Need to install Docker.
+
+Using
+
+forks = 5
+
+Execution takes
+
+15 minutes
+
+Using
+
+forks = 50
+
+Execution takes
+
+2 minutes
+
+Huge performance improvement.
+
+
+====================================================================
+HOW FORKS WORK
+====================================================================
+
+Suppose
+
+12 Servers
+
+Forks = 4
+
+Execution
+
+Round 1
+
+Server1
+
+Server2
+
+Server3
+
+Server4
+
+↓
+
+Round 2
+
+Server5
+
+Server6
+
+Server7
+
+Server8
+
+↓
+
+Round 3
+
+Server9
+
+Server10
+
+Server11
+
+Server12
+
+
+====================================================================
+ADVANTAGES
+====================================================================
+
+• Faster execution
+
+• Parallel processing
+
+• Better automation
+
+• Saves deployment time
+
+
+====================================================================
+DISADVANTAGES
+====================================================================
+
+Too many forks
+
+↓
+
+High CPU usage
+
+↓
+
+High Memory usage
+
+↓
+
+Too many SSH connections
+
+↓
+
+Can overload Ansible Control Node
+
+
+====================================================================
+REAL DEVOPS USE CASE
+====================================================================
+
+Company has
+
+500 Web Servers
+
+Need to
+
+Install Security Patch
+
+Without forks
+
+Several hours
+
+With forks = 50
+
+Completed within minutes
+
+
+
+====================================================================
+FORKS vs SERIAL (IMPORTANT)
+====================================================================
+
+Forks
+
+    Controls how many hosts Ansible
+    can connect to in parallel.
+
+Example
+
+100 Servers
+
+forks = 20
+
+↓
+
+20 servers execute simultaneously.
+
+
+-----------------------------------------------
+
+Serial
+
+Controls deployment batches.
+
+Example
+
+serial = 10
+
+↓
+
+Deploy to first 10 servers
+
+↓
+
+Then next 10
+
+↓
+
+Then next 10
+
+Used for rolling deployments.
+
+
+====================================================================
+FORKS vs SERIAL
+====================================================================
+
+Forks
+
+    Parallel execution
+
+Serial
+
+    Batch execution
+
+
+====================================================================
+BEST PRACTICES
+====================================================================
+
+Small Environment
+
+    forks = 5
+
+Medium Environment
+
+    forks = 10-20
+
+Large Production
+
+    forks = 30-50
+
+Choose a value based on:
+
+    • CPU
+    • RAM
+    • Network
+    • Number of servers
+
+Avoid setting forks too high unless your
+control node has enough resources.
+
+        forks = 20
+		
+----------------
+====================================================================
+FORKS = 2 , SERIAL = 8
+HOW DOES ANSIBLE EXECUTE?
+====================================================================
+
+Suppose you have
+
+16 Servers
+
+S1 S2 S3 S4 S5 S6 S7 S8
+S9 S10 S11 S12 S13 S14 S15 S16
+
+
+Configuration
+
+forks = 2
+
+serial = 8
+
+
+--------------------------------------------------
+STEP 1
+--------------------------------------------------
+
+Serial selects the first batch:
+
+S1 S2 S3 S4 S5 S6 S7 S8
+
+(8 servers)
+
+
+--------------------------------------------------
+STEP 2
+--------------------------------------------------
+
+Forks = 2
+
+Means Ansible can execute tasks on
+only 2 servers simultaneously.
+
+Execution:
+
+Round 1
+
+S1   S2
+
+↓
+
+Round 2
+
+S3   S4
+
+↓
+
+Round 3
+
+S5   S6
+
+↓
+
+Round 4
+
+S7   S8
+
+The first batch is complete.
+
+
+--------------------------------------------------
+STEP 3
+--------------------------------------------------
+
+Serial now moves to next batch
+
+S9 S10 S11 S12 S13 S14 S15 S16
+
+
+Again,
+
+Forks = 2
+
+Execution
+
+Round 1
+
+S9   S10
+
+↓
+
+Round 2
+
+S11  S12
+
+↓
+
+Round 3
+
+S13  S14
+
+↓
+
+Round 4
+
+S15  S16
+
+Done.
+
+===============================================================
+
+====================================================================
+ANSIBLE VAULT
+====================================================================
+
+--------------------------------------------------
+WHAT IS ANSIBLE VAULT?
+--------------------------------------------------
+
+Ansible Vault is a security feature used
+to encrypt sensitive information.
+
+Examples:
+
+    • Passwords
+    • API Keys
+    • AWS Access Keys
+    • Secret Keys
+    • Database Passwords
+    • SSL Certificates
+
+Encrypted data can only be viewed
+using the correct Vault Password.
+
+
+====================================================================
+WHY DO WE NEED ANSIBLE VAULT?
+====================================================================
+
+Problem:
+
+Suppose your playbook contains
+
+------------------------------------
+
+db_password: admin123
+
+aws_secret_key: ABCXYZ123
+
+------------------------------------
+
+If stored in GitHub,
+
+Anyone can see the passwords ❌
+
+
+Solution
+
+Encrypt the file using
+Ansible Vault.
+
+Now the file looks like
+
+------------------------------------
+
+$ANSIBLE_VAULT;1.1;AES256
+
+6634656534...
+
+------------------------------------
+
+No one can read it without
+the vault password.
+
+
+====================================================================
+REAL-TIME USE CASE
+====================================================================
+
+Company uses GitHub.
+
+Repository contains
+
+Playbooks
+
+↓
+
+Variables
+
+↓
+
+Database Password
+
+↓
+
+AWS Credentials
+
+Instead of storing them
+as plain text,
+
+Encrypt them using
+Ansible Vault.
+
+
+====================================================================
+HOW ANSIBLE VAULT WORKS
+====================================================================
+
+Plain Text Variables
+
+        ↓
+
+ansible-vault encrypt
+
+        ↓
+
+Encrypted File
+
+        ↓
+
+Git Repository
+
+        ↓
+
+During Playbook Execution
+
+Provide Vault Password
+
+        ↓
+
+Ansible decrypts automatically
+
+
+====================================================================
+COMMON VAULT COMMANDS
+====================================================================
+
+--------------------------------------------------
+1. CREATE ENCRYPTED FILE
+--------------------------------------------------
+
+ansible-vault create secrets.yml
+
+You will be asked
+
+Vault Password:
+
+Confirm Vault Password:
+
+Now edit the file.
+
+
+--------------------------------------------------
+2. VIEW ENCRYPTED FILE
+--------------------------------------------------
+
+ansible-vault view secrets.yml
+
+
+--------------------------------------------------
+3. EDIT ENCRYPTED FILE
+--------------------------------------------------
+
+ansible-vault edit secrets.yml
+
+
+--------------------------------------------------
+4. ENCRYPT EXISTING FILE
+--------------------------------------------------
+
+ansible-vault encrypt secrets.yml
+
+
+--------------------------------------------------
+5. DECRYPT FILE
+--------------------------------------------------
+
+ansible-vault decrypt secrets.yml
+
+
+--------------------------------------------------
+6. CHANGE VAULT PASSWORD
+--------------------------------------------------
+
+ansible-vault rekey secrets.yml
+
+
+====================================================================
+EXAMPLE
+====================================================================
+
+Create
+
+secrets.yml
+
+Contains
+
+------------------------------------
+
+db_user: admin
+
+db_password: MyPassword123
+
+------------------------------------
+
+Encrypt
+
+ansible-vault encrypt secrets.yml
+
+
+Now
+
+Nobody can read the file.
+
+
+====================================================================
+USING VAULT IN PLAYBOOK
+====================================================================
+
+Playbook
+
+------------------------------------
+
+- hosts: web
+
+  vars_files:
+
+    - secrets.yml
+
+  tasks:
+
+  - debug:
+
+      msg: "{{ db_password }}"
+
+------------------------------------
+
+Run
+
+ansible-playbook app.yml \
+--ask-vault-pass
+
+
+Ansible asks
+
+Vault Password:
+
+After entering the correct password,
+
+Playbook executes successfully.
+
+
+====================================================================
+USING VAULT PASSWORD FILE
+====================================================================
+
+Instead of typing password every time,
+
+Create
+
+vault_pass.txt
+
+Contains
+
+------------------------------------
+
+MyVaultPassword
+
+------------------------------------
+
+Run
+
+ansible-playbook app.yml \
+--vault-password-file vault_pass.txt
+
+Useful for
+
+CI/CD pipelines.
+
+
+====================================================================
+REAL DEVOPS USE CASE
+====================================================================
+
+Jenkins
+
+↓
+
+Runs Playbook
+
+↓
+
+Uses Vault Password File
+
+↓
+
+Decrypts Secrets
+
+↓
+
+Deploys Application
+
+
+No passwords exposed.
+
+
+====================================================================
+WHAT CAN BE ENCRYPTED?
+====================================================================
+
+• Variable Files
+
+• Playbooks
+
+• Individual Variables
+
+• Entire YAML Files
+
+
+====================================================================
+ENCRYPT SINGLE VARIABLE
+====================================================================
+
+Generate encrypted string
+
+ansible-vault encrypt_string \
+'MyPassword123' \
+--name 'db_password'
+
+Output
+
+------------------------------------
+
+db_password: !vault |
+
+$ANSIBLE_VAULT;1.1;AES256
+
+xxxxxxxxxxxxxxxx
+
+------------------------------------
+
+Useful when only one variable
+needs encryption.
+
+
+====================================================================
+BEST PRACTICES
+====================================================================
+
+✓ Encrypt only sensitive data
+
+✓ Store vault password separately
+
+✓ Never commit vault password
+  to Git
+
+✓ Use Jenkins Credentials
+  for vault password
+
+✓ Rotate vault passwords regularly
+
+
+====================================================================
+ANSIBLE VAULT vs JENKINS CREDENTIALS
+====================================================================
+
+Ansible Vault
+
+    Encrypts files and variables.
+
+Jenkins Credentials
+
+    Securely stores passwords,
+    tokens and secrets inside Jenkins.
+
+Often used together.
+
+
+====================================================================
+INTERVIEW QUESTIONS
+====================================================================
+
+Q1. What is Ansible Vault?
+
+Answer:
+
+Ansible Vault is a feature used to
+encrypt sensitive data such as passwords,
+API keys and credentials so they can be
+stored securely in playbooks or variable files.
+
+
+--------------------------------------------------
+
+Q2. Why do we need Vault?
+
+To prevent sensitive information from
+being exposed in source code repositories.
+
+
+--------------------------------------------------
+
+Q3. Which encryption algorithm is used?
+
+AES-256
+
+
+--------------------------------------------------
+
+Q4. How do you execute a playbook
+using Vault?
+
+ansible-playbook app.yml \
+--ask-vault-pass
+
+or
+
+ansible-playbook app.yml \
+--vault-password-file vault_pass.txt
+
+
+--------------------------------------------------
+
+Q5. Where is Vault commonly used?
+
+• GitHub
+
+• GitLab
+
+• Jenkins
+
+• AWS Automation
+
+• Production deployments
+
+
+====================================================================
+REAL-TIME PROJECT
+====================================================================
+
+Developer
+
+↓
+
+Writes Playbook
+
+↓
+
+Stores DB Password
+inside secrets.yml
+
+↓
+
+Encrypts using Vault
+
+↓
+
+Pushes to GitHub
+
+↓
+
+Jenkins pulls code
+
+↓
+
+Uses Vault Password
+
+↓
+
+Deploys application
+
+↓
+
+Passwords remain secure.
+
+
+====================================================================
+SIMPLE SUMMARY
+====================================================================
+
+Ansible Vault
+
+Purpose
+
+    Encrypt sensitive data
+
+Used For
+
+    Passwords
+
+    AWS Keys
+
+    API Keys
+
+    Secrets
+
+Main Commands
+
+    ansible-vault create
+
+    ansible-vault encrypt
+
+    ansible-vault decrypt
+
+    ansible-vault edit
+
+    ansible-vault view
+
+    ansible-vault rekey
+
+Run Playbook
+
+    ansible-playbook app.yml \
+    --ask-vault-pass
+
+OR
+
+    ansible-playbook app.yml \
+    --vault-password-file vault_pass.txt
