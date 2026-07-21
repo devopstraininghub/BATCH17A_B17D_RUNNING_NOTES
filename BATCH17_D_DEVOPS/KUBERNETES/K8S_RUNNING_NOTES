@@ -2981,6 +2981,109 @@ DaemonSet	 -- I want one pod on every node, always.
 =======================================================================================
 
 
+PHASE 2 --  21 JULY 2026 
+
+
+HELM :
+
+HELM
+
+
+========================================
+HELM FOR KUBERNETES: 
+========================================
+
+1. WHAT IS HELM?
+----------------
+Helm is the package manager for Kubernetes.
+It helps you package, share, and deploy complex applications easily.
+
+Think of it like:
+- apt or yum for Kubernetes.
+- Instead of applying many YAML files manually, you use one simple command.
+
+Example:
+helm install myapp ./mychart
+
+This command deploys your entire application (Deployments, Services, Configs, etc.) in one go.
+
+
+2. WHY USE HELM?
+----------------
+Without Helm:
+- You manage multiple YAML files manually.
+- Upgrades and rollbacks are manual and error-prone.
+- Hard to reuse the same setup for multiple environments.
+
+With Helm:
+- Combines all YAMLs into one “Chart”.
+- Configuration is handled via “values.yaml”.
+- Rollbacks and upgrades are easy.
+- Enforces standard folder structure and reusability.
+
+
+3. KEY HELM CONCEPTS
+--------------------
+Chart          → A package of Kubernetes YAML files.
+Release        → A deployed instance of a Chart.
+Repository     → A collection of Charts (like DockerHub for Helm).
+values.yaml    → Configuration file that defines variables and parameters.
+templates/     → Folder containing Kubernetes YAML templates.
+Chart.yaml     → Metadata about the Chart (name, version, description).
+
+
+4. INSTALLING HELM
+------------------
+Linux/macOS:
+  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+Windows (using Chocolatey):
+  choco install kubernetes-helm
+
+Verify installation:
+  helm version
+
+
+5. STRUCTURE: 
+-------------------------------
+Command:
+  helm create myapp
+
+This creates a directory:
+  myapp/
+  ├── Chart.yaml
+  ├── values.yaml
+  ├── charts/
+  └── templates/
+
+
+6. UNDERSTANDING STRUCTURE
+--------------------------
+Chart.yaml        - Metadata about the chart.
+values.yaml       - Central configuration file.
+templates/        - Kubernetes resource templates (Deployment, Service, etc.).
+_helpers.tpl      - Template helpers for naming and labels.
+
+
+
+charts.yaml
+https://helm.sh/docs/topics/charts
+
+
+
+
+
+7. CREATING A SAMPLE HELM CHART
+
+helm install fb-app .
+helm upgrade fb-app
+helm histroy fb-app
+helm template .
+helm rollback fb-app 1
+helm uninstall fb-app
+
+
+-------------------------------------------
 
 
 
