@@ -1,0 +1,27 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb-deploy 
+  labels:
+    app: fb-app
+    env: prod
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: fb-app
+      env: prod
+  template:
+    metadata:
+      labels:
+        app: fb-app
+        env: prod
+    spec:
+      containers:
+      - name: facebook-container
+        image: devopshubg333/batch17d:{{ .Values.deployment.tag }}
+        ports:
+        - containerPort: 8080
