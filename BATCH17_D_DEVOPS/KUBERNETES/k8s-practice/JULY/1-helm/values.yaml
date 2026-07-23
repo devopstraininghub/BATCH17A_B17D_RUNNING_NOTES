@@ -1,8 +1,0 @@
-
-deployment:
-  replicaCount: 2
-  tag: git_java
-
-service:
-  nodePort: 30333
-    
