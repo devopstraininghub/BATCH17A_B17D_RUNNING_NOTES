@@ -1,0 +1,21 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: mg
+  region: us-east-1
+  version: "1.32"
+
+iam:
+  withOIDC: true   #to enable IAM Roles for Service Accounts (IRSA)
+
+managedNodeGroups:
+  - name: ng-1
+    instanceType: m5.large
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    volumeSize: 40
+
+
+
+#eksctl create cluster -f cluster.yaml

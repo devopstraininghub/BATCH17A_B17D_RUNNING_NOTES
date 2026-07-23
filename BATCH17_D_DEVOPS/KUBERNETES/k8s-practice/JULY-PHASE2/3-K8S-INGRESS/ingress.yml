@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: voting-app-ingress
+  labels:
+    app: demo-voting-app
+
+# Annotations provide additional configuration for the Ingress Controller.
+# Unlike labels, annotations are not used for selecting resources—they configure behavior. 
+
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+
+
+spec:
+  ingressClassName: alb
+  rules:
+    - host: vote.b17catsvsdogs.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: voting-service
+                port:
+                  number: 80
+
+    - host: result.b17catsvsdogs.xyz
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: result-service
+                port:
+                  number: 80
