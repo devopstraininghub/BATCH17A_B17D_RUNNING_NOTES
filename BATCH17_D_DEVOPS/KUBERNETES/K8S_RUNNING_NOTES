@@ -3086,7 +3086,439 @@ helm uninstall fb-app
 -------------------------------------------
 
 
+DATE: 23 JULY 2026 
 
+
+# Helm Practice Guide - Using the Bitnami NGINX Chart
+
+---
+
+## Verify Helm Installation
+
+```bash
+helm version
+```
+
+**Explanation:** Displays the installed Helm client version.
+
+---
+
+## Add the Bitnami Helm Repository
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+**Explanation:** Registers the Bitnami chart repository with Helm.
+
+---
+
+## Update Repository Metadata
+
+```bash
+helm repo update
+```
+
+**Explanation:** Downloads the latest chart information from all configured repositories.
+
+---
+
+## List Configured Repositories
+
+```bash
+helm repo list
+```
+
+**Explanation:** Displays all Helm repositories configured on your system.
+
+Example Output:
+
+```text
+NAME      URL
+bitnami   https://charts.bitnami.com/bitnami
+```
+
+---
+
+## Search for the NGINX Chart
+
+```bash
+helm search repo nginx
+```
+
+or
+
+```bash
+helm search repo bitnami/nginx
+```
+
+**Explanation:** Searches the local repository cache for available NGINX charts.
+
+---
+
+## Display Chart Information
+
+```bash
+helm show chart bitnami/nginx
+```
+
+**Explanation:** Shows chart metadata such as name, version, description, and application version.
+
+---
+
+## View Default Configuration
+
+```bash
+helm show values bitnami/nginx
+```
+
+**Explanation:** Displays the default configuration values used by the chart.
+
+---
+
+## Save Default Values
+
+```bash
+helm show values bitnami/nginx > values.yaml
+```
+
+**Explanation:** Exports the default configuration into a local `values.yaml` file for customization.
+
+---
+
+## Install the Chart
+
+```bash
+helm install my-nginx bitnami/nginx
+```
+
+**Explanation:** Deploys the Bitnami NGINX chart with default settings.
+
+---
+
+## Verify the Installation
+
+```bash
+helm list
+```
+
+**Explanation:** Lists all installed Helm releases.
+
+```bash
+kubectl get pods
+kubectl get svc
+kubectl get deployments
+```
+
+**Explanation:** Displays the Pods, Services, and Deployments created by the Helm release.
+
+---
+
+## Check Release Status
+
+```bash
+helm status my-nginx
+```
+
+**Explanation:** Displays the current status and details of the Helm release.
+
+---
+
+## View Installed Values
+
+```bash
+helm get values my-nginx
+```
+
+**Explanation:** Shows the user-supplied configuration values used during installation.
+
+Display all values:
+
+```bash
+helm get values my-nginx --all
+```
+-----------------------------------------
+
+## Preview Templates Without Installing
+
+```bash
+helm template my-nginx bitnami/nginx
+```
+
+**Explanation:** Renders Kubernetes manifests locally without creating any resources.
+
+Save the rendered manifests:
+
+```bash
+helm template my-nginx bitnami/nginx > manifests.yaml
+```
+
+----------------
+
+## Install with Custom Values
+
+Create a custom `values.yaml` file:
+
+```yaml
+replicaCount: 2
+
+service:
+  type: NodePort
+```
+
+Install using the custom file:
+
+```bash
+helm install my-nginx bitnami/nginx -f values.yaml
+```
+
+**Explanation:** Installs the chart using customized configuration values.
+
+---
+
+## Upgrade the Release
+
+Increase the number of replicas:
+
+```bash
+helm upgrade my-nginx bitnami/nginx --set replicaCount=3
+```
+
+**Explanation:** Updates the existing release with new configuration values.
+
+Upgrade using a values file:
+
+```bash
+helm upgrade my-nginx bitnami/nginx -f values.yaml
+```
+
+**Explanation:** Applies configuration changes from a values file.
+
+---
+
+## View Release History
+
+```bash
+helm history my-nginx
+```
+
+**Explanation:** Displays all revisions of the Helm release.
+
+---
+
+## Roll Back to a Previous Revision
+
+```bash
+helm rollback my-nginx 1
+```
+
+**Explanation:** Restores the release to revision 1.
+
+---
+
+## Validate the Chart
+
+```bash
+helm lint bitnami/nginx
+```
+
+**Explanation:** Performs a basic validation of the chart syntax and best practices.
+
+---
+
+## Uninstall the Release
+
+```bash
+helm uninstall my-nginx
+```
+
+**Explanation:** Removes the Helm release and all Kubernetes resources created by it.
+
+---
+
+## Verify Cleanup
+
+```bash
+helm list
+kubectl get pods
+kubectl get svc
+```
+
+**Explanation:** Confirms that the release and associated resources have been removed.
+
+---
+
+# Quick Reference Commands
+
+```bash
+helm version
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm repo list
+
+helm search repo bitnami/nginx
+
+helm show chart bitnami/nginx
+helm show values bitnami/nginx
+
+helm install my-nginx bitnami/nginx
+
+helm list
+helm status my-nginx
+
+helm get values my-nginx
+helm get values my-nginx --all
+helm get manifest my-nginx
+
+helm template my-nginx bitnami/nginx
+helm install my-nginx bitnami/nginx --dry-run --debug
+
+helm upgrade my-nginx bitnami/nginx --set replicaCount=3
+
+helm history my-nginx
+helm rollback my-nginx 1
+
+helm uninstall my-nginx
+```
+
+===============================================================================
+
+# Helm Repository Creation
+
+## Create a Working Directory
+
+```bash
+mkdir helm-practice
+cd helm-practice
+```
+
+**Explanation:** Creates a new directory where all Helm charts and repository files will be stored.
+
+---
+
+## Create Two Sample Charts
+
+```bash
+helm create nginx
+helm create apache
+```
+
+**Explanation:** Generates two sample Helm charts with the default directory structure. 
+(like ansible galaxy crate roles directory structure, you may co relate ) 
+
+---
+
+## View the Generated Chart Structure
+
+```bash
+tree nginx
+tree apache
+```
+
+**Explanation:** Displays the folder structure of each chart.
+
+If the `tree` command is unavailable, use:
+
+```bash
+ls -R nginx
+ls -R apache
+```
+
+---
+
+## Validate the Charts
+
+```bash
+helm lint nginx
+helm lint apache
+```
+
+**Explanation:** Checks the charts for syntax errors and Helm best practices.
+
+---
+
+## Preview Kubernetes Manifests
+
+```bash
+helm template nginx ./nginx
+helm template apache ./apache
+```
+
+**Explanation:** Renders Kubernetes manifests locally without installing the charts.
+
+---
+
+## Install Charts Locally
+
+```bash
+helm install my-nginx ./nginx
+helm install my-apache ./apache
+```
+
+**Explanation:** Installs both charts into your Kubernetes cluster.
+
+---
+
+## Verify the Installation
+
+```bash
+helm list
+kubectl get pods
+kubectl get svc
+kubectl get deployments
+```
+
+**Explanation:** Lists installed Helm releases and the Kubernetes resources created by the charts.
+
+---
+
+## Package the Charts
+
+```bash
+helm package nginx
+helm package apache
+```
+
+**Explanation:** Packages each chart into a compressed `.tgz` archive.
+
+Example output:
+
+```text
+nginx-0.1.0.tgz
+apache-0.1.0.tgz
+```
+
+---
+
+## Create a Repository Folder
+
+```bash
+mkdir repo
+mv *.tgz repo/
+cd repo
+```
+
+**Explanation:** Creates a repository directory and moves the packaged charts into it.
+
+---
+
+## Generate the Repository Index
+
+```bash
+helm repo index .
+```
+
+**Explanation:** Generates the `index.yaml` file, which Helm uses to discover and download charts from the repository.
+
+Repository contents:
+
+```text
+repo/
+├── apache-0.1.0.tgz
+├── nginx-0.1.0.tgz
+└── index.yaml
+```
 
 
 
