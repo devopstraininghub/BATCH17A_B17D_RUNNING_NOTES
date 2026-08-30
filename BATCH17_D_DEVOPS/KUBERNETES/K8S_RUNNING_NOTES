@@ -496,8 +496,8 @@ aws configure
 Accesskey 
 Secret Access key 
 ---
-AKIA5FQ3NZxxxxxxxxxxxxxxxxxx
-awdmV1Uglg3Tvxxxxxxxxxxxxxxxxxxxxx
+<AWS_ACCESS_KEY_ID>
+<AWS_SECRET_ACCESS_KEY>
 
 1. awscli & configufre 
 aws sts get-caller-identity
@@ -2468,12 +2468,12 @@ The following lines were added to map the users:
 kubectl get configmap aws-auth -n kube-system -o yaml
 ---------------------------------
   mapUsers: |
-    - userarn: arn:aws:iam::141559732042:user/madhu
+    - userarn: arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:user/madhu
       username: madhu
       groups:
         - system:authenticated
 
-    - userarn: arn:aws:iam::141559732042:user/kiran
+    - userarn: arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:user/kiran
       username: kiran
       groups:
         - system:authenticated
@@ -2494,18 +2494,18 @@ kubectl get configmap aws-auth -n kube-system -o yaml
 apiVersion: v1
 data:
   mapRoles: |
-    - rolearn: arn:aws:iam::141559732042:role/eksctl-b16dcluster-nodegroup-b16ng-NodeInstanceRole-df0QmXnnuYNj
+    - rolearn: arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/<EKS_NODE_INSTANCE_ROLE_NAME>
       groups:
       - system:bootstrappers
       - system:nodes
       username: system:node:{{EC2PrivateDNSName}}
   mapUsers: |
-    - userarn: arn:aws:iam::141559732042:user/madhu
+    - userarn: arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:user/madhu
       username: madhu
       groups:
         - system:authenticated
 
-    - userarn: arn:aws:iam::141559732042:user/kiran
+    - userarn: arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:user/kiran
       username: kiran
       groups:
         - system:authenticated
@@ -3519,6 +3519,8 @@ repo/
 ├── nginx-0.1.0.tgz
 └── index.yaml
 ```
+
+
 
 
 

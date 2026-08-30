@@ -2498,10 +2498,10 @@ SAS
 DATE: 14 FEB 2026
 
 
-https://940659974468.signin.aws.amazon.com/console
+https://<AWS_ACCOUNT_ID>.signin.aws.amazon.com/console
 
 madhu
-Madhu@143
+<IAM_USER_PASSWORD>
 
 admin access
 

@@ -13,5 +13,5 @@ spec:
     - ReadWriteOnce
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-0a474a11ce83693cb
+    volumeHandle: <EFS_FILE_SYSTEM_ID>
 

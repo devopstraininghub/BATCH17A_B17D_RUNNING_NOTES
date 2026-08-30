@@ -22,8 +22,8 @@ pipeline {
 
                 sh '''
                     mvn sonar:sonar \
-                    -Dsonar.host.url=http://100.31.37.172:9000 \
-                    -Dsonar.token=squ_0f39becdb864b01079c7ca1c09c68e6d1353446f
+                    -Dsonar.host.url=http://<SONARQUBE_SERVER_IP>:9000 \
+                    -Dsonar.token=<SONARQUBE_TOKEN>
                 '''
             }
         }

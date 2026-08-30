@@ -12,13 +12,13 @@ spec:
     - containerPort: 3306
     env:
     - name: MYSQL_ROOT_PASSWORD
-      value: "rootpassword"          # Set a root password
+      value: "<MYSQL_ROOT_PASSWORD>"          # Set a root password
     - name: MYSQL_DATABASE
       value: "testdb"                # Optional: create a default database
     - name: MYSQL_USER
       value: "testuser"              # Optional: create a test user
     - name: MYSQL_PASSWORD
-      value: "testpass"              # Optional: create test user password
+      value: "<MYSQL_TEST_PASSWORD>"              # Optional: create test user password
 
     # --- STARTUP PROBE ---
     startupProbe:
@@ -26,7 +26,7 @@ spec:
         command:
         - sh
         - -c
-        - "mysqladmin ping -h 127.1.2.1 -u root -prootpassword"
+        - "mysqladmin ping -h 127.1.2.1 -u root -p<MYSQL_ROOT_PASSWORD>"
       initialDelaySeconds: 10        # Wait 10s before the first check
       periodSeconds: 10              # Check every 10s
       failureThreshold: 30          # wait up to 30 failed health checks , Allow up to 5 minutes (30 * 10s) for startup
@@ -45,7 +45,7 @@ spec:
         command:
         - sh
         - -c
-        - "mysqladmin ping -h 127.0.0.1 -u root -prootpassword"
+        - "mysqladmin ping -h 127.0.0.1 -u root -p<MYSQL_ROOT_PASSWORD>"
       initialDelaySeconds: 15
       periodSeconds: 10
       failureThreshold: 3
